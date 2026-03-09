@@ -500,6 +500,67 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
   </div>
 </div>
 
+<!-- ⑤計算 -->
+<div class="page" id="page-calc">
+
+  <div class="section-label" style="margin-top:4px;">ロット・pips を入力</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+    <div>
+      <div class="config-label" style="font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px;">ロット数（通貨）</div>
+      <input class="config-input" id="calc-lot" type="number" inputmode="numeric" placeholder="10000" value="10000"
+        oninput="calcConvert()" style="font-size:16px;padding:12px;">
+    </div>
+    <div>
+      <div class="config-label" style="font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px;">pips数</div>
+      <input class="config-input" id="calc-pips" type="number" inputmode="decimal" placeholder="20"
+        oninput="calcConvert()" style="font-size:16px;padding:12px;">
+    </div>
+  </div>
+
+  <!-- 結果カード -->
+  <div id="calc-result" style="margin-top:16px;display:none;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.08em;margin-bottom:6px;">損益金額（円）</div>
+        <div id="res-yen" style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;color:var(--green);">¥2,000</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--surface);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px;">R換算</div>
+          <div id="res-r" style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);">1.00R</div>
+        </div>
+        <div style="background:var(--surface);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;margin-bottom:6px;">1R = 何pips？</div>
+          <div id="res-1r-pips" style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--gold);">20pips</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 早見表 -->
+  <div class="section-label" style="margin-top:24px;">早見表（入力ロット基準）</div>
+  <div id="calc-table-wrap">
+    <div class="table-wrap">
+      <table class="stats-table" id="calc-table">
+        <thead><tr>
+          <th>pips</th><th>R換算</th><th>円（概算）</th><th>メモ</th>
+        </tr></thead>
+        <tbody id="calc-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SL/TP早見表 -->
+  <div class="section-label" style="margin-top:20px;">SL幅ごとの損失金額</div>
+  <div class="table-wrap">
+    <table class="stats-table">
+      <thead><tr><th>SL幅</th><th>pips</th><th>損失（円）</th></tr></thead>
+      <tbody id="sl-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
 <!-- TAB BAR -->
 <nav class="tabbar">
   <button class="tab-btn active" onclick="switchTab('record',this)">
@@ -513,6 +574,10 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
   <button class="tab-btn" onclick="switchTab('stats',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     統計
+  </button>
+  <button class="tab-btn" onclick="switchTab('calc',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+    計算
   </button>
   <button class="tab-btn" onclick="switchTab('config',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -833,6 +898,80 @@ function saveConfig() {
 }
 
 // ══════════════════════════════════════════════
+// CALCULATOR
+// ══════════════════════════════════════════════
+// USD/JPY: 1pip = 0.01円 × ロット数
+// 1R = 20pips固定（SL幅）
+const ONE_R_PIPS = 20;
+
+function calcConvert() {
+  const lot  = parseFloat(document.getElementById('calc-lot').value)  || 0;
+  const pips = parseFloat(document.getElementById('calc-pips').value) || 0;
+
+  if (!lot || !pips) {
+    document.getElementById('calc-result').style.display = 'none';
+    renderCalcTable(lot || 10000);
+    renderSlTable(lot || 10000);
+    return;
+  }
+
+  // 計算
+  const yenPerPip = lot * 0.01;          // USD/JPY: 1pip = lot × 0.01円
+  const totalYen  = yenPerPip * pips;
+  const rValue    = pips / ONE_R_PIPS;   // 1R = 20pips
+  const pipsFor1R = ONE_R_PIPS;
+
+  // 結果表示
+  document.getElementById('calc-result').style.display = 'block';
+  document.getElementById('res-yen').textContent = '¥' + Math.round(totalYen).toLocaleString();
+  document.getElementById('res-r').textContent   = rValue.toFixed(2) + 'R';
+  document.getElementById('res-1r-pips').textContent = pipsFor1R + 'pips';
+
+  renderCalcTable(lot);
+  renderSlTable(lot);
+}
+
+function renderCalcTable(lot) {
+  const yenPerPip = lot * 0.01;
+  const rows = [
+    { pips: 5,  r: '0.25R', memo: '小さい動き' },
+    { pips: 10, r: '0.5R',  memo: '半分リスク' },
+    { pips: 15, r: '0.75R', memo: 'SL引上げ目安' },
+    { pips: 20, r: '1R',    memo: '★ SL幅 / 基準' },
+    { pips: 25, r: '1.25R', memo: '' },
+    { pips: 30, r: '1.5R',  memo: 'テンプレB SL移動' },
+    { pips: 40, r: '2R',    memo: '★ TP2（最終利確）' },
+    { pips: 60, r: '3R',    memo: '大きく伸びた場合' },
+  ];
+  const tbody = document.getElementById('calc-tbody');
+  tbody.innerHTML = rows.map(row => {
+    const yen = Math.round(yenPerPip * row.pips).toLocaleString();
+    const isKey = row.memo.includes('★');
+    return `<tr style="${isKey ? 'background:rgba(79,142,247,.08)' : ''}">
+      <td style="${isKey ? 'color:var(--gold);font-weight:700' : ''}">${row.pips}pips</td>
+      <td style="${isKey ? 'color:var(--accent);font-weight:700' : ''}">${row.r}</td>
+      <td>¥${yen}</td>
+      <td style="color:var(--muted);font-size:11px;">${row.memo}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSlTable(lot) {
+  const yenPerPip = lot * 0.01;
+  const slRows = [10, 15, 20, 25, 30, 40];
+  document.getElementById('sl-tbody').innerHTML = slRows.map(pips => {
+    const yen = Math.round(yenPerPip * pips).toLocaleString();
+    const r   = (pips / ONE_R_PIPS).toFixed(2);
+    const isStd = pips === 20;
+    return `<tr style="${isStd ? 'background:rgba(248,113,113,.08)' : ''}">
+      <td style="${isStd ? 'color:var(--red);font-weight:700' : ''}">${r}R</td>
+      <td style="${isStd ? 'color:var(--red);font-weight:700' : ''}">${pips}pips</td>
+      <td style="${isStd ? 'color:var(--red);font-weight:700' : ''}">¥${yen}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
 // TAB
 // ══════════════════════════════════════════════
 function switchTab(name, btn) {
@@ -842,6 +981,7 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   if (name === 'history') loadHistory();
   if (name === 'stats')   loadStats();
+  if (name === 'calc') { renderCalcTable(10000); renderSlTable(10000); }
 }
 
 // ══════════════════════════════════════════════
