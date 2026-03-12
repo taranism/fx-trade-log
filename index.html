@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,295 +9,446 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
 
-  :root {
-    --bg:       #0a0e1a;
-    --surface:  #111827;
-    --card:     #1a2235;
-    --border:   #2a3450;
-    --accent:   #4f8ef7;
-    --gold:     #f5c842;
-    --green:    #34d399;
-    --red:      #f87171;
-    --orange:   #fb923c;
-    --txt:      #e2e8f0;
-    --muted:    #64748b;
-    --radius:   14px;
-  }
+:root {
+–bg:       #0a0e1a;
+–surface:  #111827;
+–card:     #1a2235;
+–border:   #2a3450;
+–accent:   #4f8ef7;
+–gold:     #f5c842;
+–green:    #34d399;
+–red:      #f87171;
+–orange:   #fb923c;
+–txt:      #e2e8f0;
+–muted:    #64748b;
+–radius:   14px;
+}
 
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-  body {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    background: var(--bg);
-    color: var(--txt);
-    min-height: 100dvh;
-    max-width: 480px;
-    margin: 0 auto;
-  }
+body {
+font-family: ‘Zen Kaku Gothic New’, sans-serif;
+background: var(–bg);
+color: var(–txt);
+min-height: 100dvh;
+max-width: 480px;
+margin: 0 auto;
+}
 
-  /* ── TOP NAV ── */
-  .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(10,14,26,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .topbar-title { font-size: 15px; font-weight: 700; color: var(--gold); letter-spacing: .04em; }
-  .topbar-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.topbar {
+position: sticky; top: 0; z-index: 100;
+background: rgba(10,14,26,0.92);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid var(–border);
+padding: 12px 16px;
+display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-title { font-size: 15px; font-weight: 700; color: var(–gold); letter-spacing: .04em; }
+.topbar-sub   { font-size: 11px; color: var(–muted); margin-top: 1px; }
 
-  /* ── TAB BAR ── */
-  .tabbar {
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 480px;
-    background: rgba(17,24,39,0.96);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border);
-    display: flex; z-index: 100;
-  }
-  .tab-btn {
-    flex: 1; padding: 10px 0 14px;
-    background: none; border: none; cursor: pointer;
-    color: var(--muted); font-family: inherit;
-    font-size: 10px; font-weight: 700;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    transition: color .2s;
-  }
-  .tab-btn.active { color: var(--accent); }
-  .tab-btn svg { width: 20px; height: 20px; }
+.tabbar {
+position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+width: 100%; max-width: 480px;
+background: rgba(17,24,39,0.96);
+backdrop-filter: blur(12px);
+border-top: 1px solid var(–border);
+display: flex; z-index: 100;
+}
+.tab-btn {
+flex: 1; padding: 10px 0 14px;
+background: none; border: none; cursor: pointer;
+color: var(–muted); font-family: inherit;
+font-size: 10px; font-weight: 700;
+display: flex; flex-direction: column; align-items: center; gap: 3px;
+transition: color .2s;
+}
+.tab-btn.active { color: var(–accent); }
+.tab-btn svg { width: 20px; height: 20px; }
 
-  /* ── PAGES ── */
-  .page { display: none; padding: 16px 16px 90px; }
-  .page.active { display: block; }
+.page { display: none; padding: 16px 16px 90px; }
+.page.active { display: block; }
 
-  /* ── SECTION LABEL ── */
-  .section-label {
-    font-size: 10px; font-weight: 700; color: var(--muted);
-    letter-spacing: .1em; text-transform: uppercase;
-    margin: 20px 0 8px;
-  }
-  .section-label:first-child { margin-top: 4px; }
+.section-label {
+font-size: 10px; font-weight: 700; color: var(–muted);
+letter-spacing: .1em; text-transform: uppercase;
+margin: 20px 0 8px;
+}
+.section-label:first-child { margin-top: 4px; }
 
-  /* ── CHIP SELECT ── */
-  .chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
-  .chip {
-    padding: 7px 14px;
-    border-radius: 99px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    font-family: inherit; font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all .15s;
-    white-space: nowrap;
-  }
-  .chip:active { transform: scale(0.94); }
-  .chip.selected {
-    border-color: var(--accent);
-    background: rgba(79,142,247,.18);
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .chip.sel-L   { border-color: #60a5fa; background: rgba(96,165,250,.15); color: #60a5fa; }
-  .chip.sel-S   { border-color: #f87171; background: rgba(248,113,113,.15); color: #f87171; }
-  .chip.sel-A   { border-color: var(--green); background: rgba(52,211,153,.15); color: var(--green); }
-  .chip.sel-B   { border-color: var(--gold); background: rgba(245,200,66,.15); color: var(--gold); }
-  .chip.sel-C   { border-color: var(--orange); background: rgba(251,146,60,.15); color: var(--orange); }
-  .chip.sel-yes { border-color: var(--green); background: rgba(52,211,153,.13); color: var(--green); }
-  .chip.sel-no  { border-color: var(--red);   background: rgba(248,113,113,.13); color: var(--red); }
+/* ── CHECKLIST ── */
+.checklist-card {
+background: var(–card);
+border: 1.5px solid var(–border);
+border-radius: var(–radius);
+padding: 16px;
+margin-bottom: 16px;
+}
+.checklist-title {
+font-size: 12px; font-weight: 700; color: var(–gold);
+letter-spacing: .08em; margin-bottom: 12px;
+display: flex; align-items: center; gap: 6px;
+}
+.check-item {
+display: flex; align-items: center; justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid rgba(42,52,80,.5);
+}
+.check-item:last-child { border-bottom: none; padding-bottom: 0; }
+.check-label { font-size: 13px; color: var(–txt); flex: 1; }
+.check-btns { display: flex; gap: 6px; }
+.check-btn {
+padding: 5px 12px;
+border-radius: 99px;
+border: 1.5px solid var(–border);
+background: var(–surface);
+font-family: inherit; font-size: 11px; font-weight: 700;
+cursor: pointer; transition: all .15s; color: var(–muted);
+}
+.check-btn.ok {
+border-color: var(–green);
+background: rgba(52,211,153,.15);
+color: var(–green);
+}
+.check-btn.ng {
+border-color: var(–red);
+background: rgba(248,113,113,.15);
+color: var(–red);
+}
 
-  /* ── R SLIDER ── */
-  .r-display {
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 36px; font-weight: 600;
-    margin: 8px 0 4px;
-    transition: color .2s;
-  }
-  .r-display.pos { color: var(--green); }
-  .r-display.neg { color: var(--red); }
-  .r-display.zero { color: var(--muted); }
+/* チェック結果バナー */
+.checklist-result {
+border-radius: var(–radius);
+padding: 12px 16px;
+margin-bottom: 16px;
+font-size: 13px; font-weight: 700;
+text-align: center;
+display: none;
+}
+.checklist-result.all-ok {
+display: block;
+background: rgba(52,211,153,.12);
+border: 1.5px solid var(–green);
+color: var(–green);
+}
+.checklist-result.has-ng {
+display: block;
+background: rgba(248,113,113,.10);
+border: 1.5px solid var(–red);
+color: var(–red);
+}
 
-  .r-buttons {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px; margin-top: 8px;
-  }
-  .r-btn {
-    padding: 9px 0;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    color: var(--txt); font-family: inherit; font-size: 12px; font-weight: 600;
-    cursor: pointer; transition: all .15s;
-  }
-  .r-btn:active { transform: scale(0.92); }
-  .r-btn.selected-pos { border-color: var(--green); background: rgba(52,211,153,.18); color: var(--green); }
-  .r-btn.selected-neg { border-color: var(--red);   background: rgba(248,113,113,.18); color: var(--red); }
+/* エントリー種別選択 */
+.entry-type-section {
+display: none;
+margin-bottom: 16px;
+}
+.entry-type-section.show { display: block; }
+.entry-type-label {
+font-size: 11px; font-weight: 700; color: var(–muted);
+letter-spacing: .08em; margin-bottom: 8px;
+}
+.entry-type-btns { display: flex; gap: 8px; }
+.entry-type-btn {
+flex: 1; padding: 12px 8px;
+border-radius: var(–radius);
+border: 1.5px solid var(–border);
+background: var(–surface);
+font-family: inherit; font-size: 12px; font-weight: 700;
+cursor: pointer; transition: all .15s; color: var(–muted);
+text-align: center; line-height: 1.4;
+}
+.entry-type-btn.sel-skip {
+border-color: var(–muted);
+background: rgba(100,116,139,.15);
+color: var(–txt);
+}
+.entry-type-btn.sel-violation {
+border-color: var(–orange);
+background: rgba(251,146,60,.15);
+color: var(–orange);
+}
 
-  /* ── TEXTAREA ── */
-  textarea {
-    width: 100%;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--txt); font-family: inherit; font-size: 14px;
-    padding: 12px; resize: none; outline: none;
-    transition: border-color .15s;
-    line-height: 1.6;
-  }
-  textarea:focus { border-color: var(--accent); }
+/* ── CHIP SELECT ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+padding: 7px 14px;
+border-radius: 99px;
+border: 1.5px solid var(–border);
+background: var(–surface);
+color: var(–muted);
+font-family: inherit; font-size: 13px; font-weight: 500;
+cursor: pointer; transition: all .15s;
+white-space: nowrap;
+}
+.chip:active { transform: scale(0.94); }
+.chip.selected {
+border-color: var(–accent);
+background: rgba(79,142,247,.18);
+color: var(–accent);
+font-weight: 700;
+}
+.chip.sel-L   { border-color: #60a5fa; background: rgba(96,165,250,.15); color: #60a5fa; }
+.chip.sel-S   { border-color: #f87171; background: rgba(248,113,113,.15); color: #f87171; }
+.chip.sel-A   { border-color: var(–green); background: rgba(52,211,153,.15); color: var(–green); }
+.chip.sel-B   { border-color: var(–gold); background: rgba(245,200,66,.15); color: var(–gold); }
+.chip.sel-C   { border-color: var(–orange); background: rgba(251,146,60,.15); color: var(–orange); }
+.chip.sel-yes { border-color: var(–green); background: rgba(52,211,153,.13); color: var(–green); }
+.chip.sel-no  { border-color: var(–red);   background: rgba(248,113,113,.13); color: var(–red); }
 
-  /* ── SUBMIT BTN ── */
-  .submit-btn {
-    width: 100%; padding: 16px;
-    border-radius: var(--radius);
-    border: none; cursor: pointer;
-    background: linear-gradient(135deg, var(--accent), #7c3aed);
-    color: #fff; font-family: inherit; font-size: 16px; font-weight: 700;
-    letter-spacing: .04em;
-    margin-top: 24px;
-    transition: opacity .2s, transform .15s;
-    box-shadow: 0 4px 24px rgba(79,142,247,.35);
-  }
-  .submit-btn:active { transform: scale(0.97); opacity: .9; }
-  .submit-btn:disabled { opacity: .4; cursor: not-allowed; }
+/* エントリーフォームのwrapper */
+.entry-form-section { display: none; }
+.entry-form-section.show { display: block; }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--green); color: #000;
-    padding: 10px 22px; border-radius: 99px;
-    font-size: 13px; font-weight: 700;
-    opacity: 0; pointer-events: none;
-    transition: all .3s; z-index: 200; white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.error { background: var(--red); color: #fff; }
+/* ── R BUTTONS ── */
+.r-display {
+text-align: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 36px; font-weight: 600;
+margin: 8px 0 4px;
+transition: color .2s;
+}
+.r-display.pos { color: var(–green); }
+.r-display.neg { color: var(–red); }
+.r-display.zero { color: var(–muted); }
 
-  /* ── RECORD LIST ── */
-  .record-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-    margin-bottom: 10px;
-    position: relative;
-    overflow: hidden;
-  }
-  .record-card::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  }
-  .record-card.win::before  { background: var(--green); }
-  .record-card.loss::before { background: var(--red); }
-  .record-card.be::before   { background: var(--muted); }
+.r-buttons {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 6px; margin-top: 8px;
+}
+.r-btn {
+padding: 9px 0;
+border-radius: 10px;
+border: 1.5px solid var(–border);
+background: var(–surface);
+color: var(–txt); font-family: inherit; font-size: 12px; font-weight: 600;
+cursor: pointer; transition: all .15s;
+}
+.r-btn:active { transform: scale(0.92); }
+.r-btn.selected-pos { border-color: var(–green); background: rgba(52,211,153,.18); color: var(–green); }
+.r-btn.selected-neg { border-color: var(–red);   background: rgba(248,113,113,.18); color: var(–red); }
 
-  .rc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .rc-date { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-  .rc-r {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px; font-weight: 700;
-  }
-  .rc-r.pos { color: var(--green); }
-  .rc-r.neg { color: var(--red); }
-  .rc-r.zero { color: var(--muted); }
+textarea {
+width: 100%;
+background: var(–surface);
+border: 1.5px solid var(–border);
+border-radius: var(–radius);
+color: var(–txt); font-family: inherit; font-size: 14px;
+padding: 12px; resize: none; outline: none;
+transition: border-color .15s;
+line-height: 1.6;
+}
+textarea:focus { border-color: var(–accent); }
 
-  .rc-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .rc-tag {
-    font-size: 10px; font-weight: 700;
-    padding: 3px 8px; border-radius: 99px;
-    border: 1px solid var(--border);
-    color: var(--muted); background: var(--surface);
-  }
-  .rc-tag.dir-L { border-color: #60a5fa; color: #60a5fa; }
-  .rc-tag.dir-S { border-color: #f87171; color: #f87171; }
-  .rc-tag.conf-A { border-color: var(--green); color: var(--green); }
-  .rc-tag.conf-B { border-color: var(--gold); color: var(--gold); }
-  .rc-tag.conf-C { border-color: var(--orange); color: var(--orange); }
+.submit-btn {
+width: 100%; padding: 16px;
+border-radius: var(–radius);
+border: none; cursor: pointer;
+background: linear-gradient(135deg, var(–accent), #7c3aed);
+color: #fff; font-family: inherit; font-size: 16px; font-weight: 700;
+letter-spacing: .04em;
+margin-top: 24px;
+transition: opacity .2s, transform .15s;
+box-shadow: 0 4px 24px rgba(79,142,247,.35);
+}
+.submit-btn:active { transform: scale(0.97); opacity: .9; }
+.submit-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-  .rc-memo { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.submit-btn.skip-btn {
+background: linear-gradient(135deg, #475569, #334155);
+box-shadow: 0 4px 24px rgba(71,85,105,.35);
+}
+.submit-btn.violation-btn {
+background: linear-gradient(135deg, var(–orange), #dc2626);
+box-shadow: 0 4px 24px rgba(251,146,60,.35);
+}
 
-  .delete-btn {
-    position: absolute; top: 10px; right: 10px;
-    background: none; border: none; cursor: pointer;
-    color: var(--muted); font-size: 16px; padding: 4px;
-    transition: color .15s;
-  }
-  .delete-btn:active { color: var(--red); }
+.toast {
+position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+background: var(–green); color: #000;
+padding: 10px 22px; border-radius: 99px;
+font-size: 13px; font-weight: 700;
+opacity: 0; pointer-events: none;
+transition: all .3s; z-index: 200; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(–red); color: #fff; }
 
-  /* ── STATS ── */
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px;
-    text-align: center;
-  }
-  .stat-label { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: .06em; margin-bottom: 6px; }
-  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+/* ── RECORD LIST ── */
+.record-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 14px;
+margin-bottom: 10px;
+position: relative;
+overflow: hidden;
+}
+.record-card::before {
+content: ‘’;
+position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+}
+.record-card.win::before      { background: var(–green); }
+.record-card.loss::before     { background: var(–red); }
+.record-card.be::before       { background: var(–muted); }
+.record-card.skipped::before  { background: var(–muted); }
+.record-card.violation::before { background: var(–orange); }
 
-  .table-wrap { overflow-x: auto; margin-top: 8px; }
-  .stats-table {
-    width: 100%; border-collapse: collapse; font-size: 12px;
-  }
-  .stats-table th {
-    background: var(--surface); color: var(--muted);
-    font-size: 10px; font-weight: 700; letter-spacing: .06em;
-    padding: 8px 10px; text-align: left; white-space: nowrap;
-    border-bottom: 1px solid var(--border);
-  }
-  .stats-table td {
-    padding: 9px 10px; border-bottom: 1px solid rgba(42,52,80,.5);
-    white-space: nowrap;
-  }
-  .stats-table tr:last-child td { border-bottom: none; }
+.rc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.rc-date { font-size: 11px; color: var(–muted); font-family: ‘JetBrains Mono’, monospace; }
+.rc-r {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 18px; font-weight: 700;
+}
+.rc-r.pos { color: var(–green); }
+.rc-r.neg { color: var(–red); }
+.rc-r.zero { color: var(–muted); }
 
-  .export-btn {
-    width: 100%; padding: 13px;
-    border-radius: var(--radius);
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    color: var(--txt); font-family: inherit; font-size: 14px; font-weight: 700;
-    cursor: pointer; margin-top: 16px;
-    transition: all .15s;
-  }
-  .export-btn:active { background: var(--card); }
+.rc-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.rc-tag {
+font-size: 10px; font-weight: 700;
+padding: 3px 8px; border-radius: 99px;
+border: 1px solid var(–border);
+color: var(–muted); background: var(–surface);
+}
+.rc-tag.dir-L { border-color: #60a5fa; color: #60a5fa; }
+.rc-tag.dir-S { border-color: #f87171; color: #f87171; }
+.rc-tag.conf-A { border-color: var(–green); color: var(–green); }
+.rc-tag.conf-B { border-color: var(–gold); color: var(–gold); }
+.rc-tag.conf-C { border-color: var(–orange); color: var(–orange); }
+.rc-tag.type-skip { border-color: var(–muted); color: var(–muted); }
+.rc-tag.type-violation { border-color: var(–orange); color: var(–orange); }
+.rc-tag.type-normal { border-color: var(–accent); color: var(–accent); }
 
-  /* ── LOADING ── */
-  .loading { text-align: center; color: var(--muted); padding: 40px 0; font-size: 13px; }
-  .empty   { text-align: center; color: var(--muted); padding: 40px 0; font-size: 13px; }
+.rc-memo { font-size: 12px; color: var(–muted); margin-top: 8px; line-height: 1.5; }
 
-  /* ── CONFIG ── */
-  .config-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
-  }
-  .config-label { font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
-  .config-input {
-    width: 100%; background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 10px; color: var(--txt);
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    padding: 10px; outline: none;
-    transition: border-color .15s;
-  }
-  .config-input:focus { border-color: var(--accent); }
-  .save-config-btn {
-    width: 100%; padding: 13px;
-    border-radius: var(--radius); border: none; cursor: pointer;
-    background: var(--accent); color: #fff;
-    font-family: inherit; font-size: 14px; font-weight: 700;
-    margin-top: 4px; transition: opacity .2s;
-  }
-  .save-config-btn:active { opacity: .8; }
+.rc-actions {
+display: flex; gap: 6px;
+position: absolute; top: 10px; right: 10px;
+}
+.edit-btn, .delete-btn {
+background: none; border: none; cursor: pointer;
+font-size: 14px; padding: 4px;
+transition: color .15s; color: var(–muted);
+}
+.edit-btn:active { color: var(–accent); }
+.delete-btn:active { color: var(–red); }
 
-  /* scroll padding for sticky nav */
-  html { scroll-padding-top: 60px; }
+/* ── EDIT MODAL ── */
+.modal-overlay {
+display: none;
+position: fixed; inset: 0; z-index: 300;
+background: rgba(0,0,0,.7);
+backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; align-items: flex-end; }
+.modal-sheet {
+background: var(–surface);
+border-top: 1px solid var(–border);
+border-radius: 20px 20px 0 0;
+padding: 20px 16px 40px;
+width: 100%; max-height: 85vh;
+overflow-y: auto;
+}
+.modal-handle {
+width: 36px; height: 4px;
+background: var(–border); border-radius: 99px;
+margin: 0 auto 16px;
+}
+.modal-title {
+font-size: 15px; font-weight: 700; color: var(–gold);
+margin-bottom: 16px; text-align: center;
+}
+.modal-btns {
+display: flex; gap: 10px; margin-top: 20px;
+}
+.modal-cancel {
+flex: 1; padding: 13px;
+border-radius: var(–radius);
+border: 1.5px solid var(–border);
+background: var(–surface);
+color: var(–txt); font-family: inherit; font-size: 14px; font-weight: 700;
+cursor: pointer;
+}
+.modal-save {
+flex: 2; padding: 13px;
+border-radius: var(–radius);
+border: none; cursor: pointer;
+background: var(–accent);
+color: #fff; font-family: inherit; font-size: 14px; font-weight: 700;
+}
+
+/* ── STATS ── */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius); padding: 14px;
+text-align: center;
+}
+.stat-label { font-size: 10px; color: var(–muted); font-weight: 700; letter-spacing: .06em; margin-bottom: 6px; }
+.stat-val { font-family: ‘JetBrains Mono’, monospace; font-size: 22px; font-weight: 700; }
+
+.table-wrap { overflow-x: auto; margin-top: 8px; }
+.stats-table {
+width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.stats-table th {
+background: var(–surface); color: var(–muted);
+font-size: 10px; font-weight: 700; letter-spacing: .06em;
+padding: 8px 10px; text-align: left; white-space: nowrap;
+border-bottom: 1px solid var(–border);
+}
+.stats-table td {
+padding: 9px 10px; border-bottom: 1px solid rgba(42,52,80,.5);
+white-space: nowrap;
+}
+.stats-table tr:last-child td { border-bottom: none; }
+
+.export-btn {
+width: 100%; padding: 13px;
+border-radius: var(–radius);
+border: 1.5px solid var(–border);
+background: var(–surface);
+color: var(–txt); font-family: inherit; font-size: 14px; font-weight: 700;
+cursor: pointer; margin-top: 16px;
+transition: all .15s;
+}
+.export-btn:active { background: var(–card); }
+
+.loading { text-align: center; color: var(–muted); padding: 40px 0; font-size: 13px; }
+.empty   { text-align: center; color: var(–muted); padding: 40px 0; font-size: 13px; }
+
+.config-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius); padding: 16px; margin-bottom: 12px;
+}
+.config-label { font-size: 11px; color: var(–muted); font-weight: 700; margin-bottom: 8px; }
+.config-input {
+width: 100%; background: var(–surface);
+border: 1.5px solid var(–border);
+border-radius: 10px; color: var(–txt);
+font-family: ‘JetBrains Mono’, monospace; font-size: 12px;
+padding: 10px; outline: none;
+transition: border-color .15s;
+}
+.config-input:focus { border-color: var(–accent); }
+.save-config-btn {
+width: 100%; padding: 13px;
+border-radius: var(–radius); border: none; cursor: pointer;
+background: var(–accent); color: #fff;
+font-family: inherit; font-size: 14px; font-weight: 700;
+margin-top: 4px; transition: opacity .2s;
+}
+.save-config-btn:active { opacity: .8; }
+
+html { scroll-padding-top: 60px; }
 </style>
+
 </head>
 <body>
 
 <!-- TOP BAR -->
+
 <div class="topbar">
   <div>
     <div class="topbar-title">りょーまFX 📈</div>
@@ -306,156 +458,249 @@
 </div>
 
 <!-- PAGES -->
+
 <!-- ①記録 -->
+
 <div class="page active" id="page-record">
 
   <div class="section-label">日付</div>
   <input type="date" id="inp-date" class="config-input"
     style="font-size:15px;padding:11px 14px;border-radius:var(--radius);">
 
-  <div class="section-label">時間帯</div>
-  <div class="chip-group" id="cg-session">
-    <div class="chip" data-val="東京">東京</div>
-    <div class="chip" data-val="ロンドン">ロンドン</div>
-    <div class="chip" data-val="NY">NY</div>
-    <div class="chip" data-val="東京/ロンドン">東京/ロンドン</div>
-    <div class="chip" data-val="ロンドン/NY">ロンドン/NY</div>
+  <!-- チェックリスト -->
+
+  <div class="section-label" style="margin-top:16px;">エントリー前チェックリスト</div>
+  <div class="checklist-card">
+    <div class="check-item">
+      <div class="check-label">① 1H・4H方向が定まってる？</div>
+      <div class="check-btns">
+        <button class="check-btn" data-check="trend" data-val="ok" onclick="setCheck('trend','ok',this)">✓ OK</button>
+        <button class="check-btn" data-check="trend" data-val="ng" onclick="setCheck('trend','ng',this)">✗ NG</button>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-label">② 1Hヒストが拡大中？</div>
+      <div class="check-btns">
+        <button class="check-btn" data-check="hist" data-val="ok" onclick="setCheck('hist','ok',this)">✓ OK</button>
+        <button class="check-btn" data-check="hist" data-val="ng" onclick="setCheck('hist','ng',this)">✗ NG</button>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-label">③ 直近高安付近じゃない？</div>
+      <div class="check-btns">
+        <button class="check-btn" data-check="hl" data-val="ok" onclick="setCheck('hl','ok',this)">✓ OK</button>
+        <button class="check-btn" data-check="hl" data-val="ng" onclick="setCheck('hl','ng',this)">✗ NG</button>
+      </div>
+    </div>
   </div>
 
-  <div class="section-label">4H環境</div>
-  <div class="chip-group" id="cg-env4h">
-    <div class="chip" data-val="推進">推進</div>
-    <div class="chip" data-val="フェイク連発">フェイク連発</div>
-    <div class="chip" data-val="揺さぶり">揺さぶり</div>
-    <div class="chip" data-val="不明">不明</div>
+  <!-- チェック結果 -->
+
+  <div class="checklist-result all-ok" id="result-ok">✅ 全条件クリア！エントリーOK</div>
+  <div class="checklist-result has-ng" id="result-ng">⚠️ 条件未達 — 見送り推奨</div>
+
+  <!-- NG時の選択 -->
+
+  <div class="entry-type-section" id="ng-action">
+    <div class="entry-type-label">どうする？</div>
+    <div class="entry-type-btns">
+      <button class="entry-type-btn" data-type="skipped" onclick="setEntryType('skipped',this)">
+        🛑 見送る<br><span style="font-size:10px;color:var(--muted)">ルール通り</span>
+      </button>
+      <button class="entry-type-btn" data-type="violation" onclick="setEntryType('violation',this)">
+        ⚡ エントリーする<br><span style="font-size:10px;color:var(--muted)">ルール違反</span>
+      </button>
+    </div>
   </div>
 
-  <div class="section-label">1Hヒスト状態</div>
-  <div class="chip-group" id="cg-hist">
-    <div class="chip" data-val="拡大中">拡大中</div>
-    <div class="chip" data-val="縮小中">縮小中</div>
-    <div class="chip" data-val="フラット">フラット</div>
+  <!-- エントリーフォーム（通常 or 違反時のみ表示） -->
+
+  <div class="entry-form-section" id="entry-form">
+
+```
+<div class="section-label">時間帯</div>
+<div class="chip-group" id="cg-session">
+  <div class="chip" data-val="東京">東京</div>
+  <div class="chip" data-val="ロンドン">ロンドン</div>
+  <div class="chip" data-val="NY">NY</div>
+  <div class="chip" data-val="東京/ロンドン">東京/ロンドン</div>
+  <div class="chip" data-val="ロンドン/NY">ロンドン/NY</div>
+</div>
+
+<div class="section-label">4H環境</div>
+<div class="chip-group" id="cg-env4h">
+  <div class="chip" data-val="推進">推進</div>
+  <div class="chip" data-val="フェイク連発">フェイク連発</div>
+  <div class="chip" data-val="揺さぶり">揺さぶり</div>
+  <div class="chip" data-val="不明">不明</div>
+</div>
+
+<div class="section-label">1Hヒスト状態</div>
+<div class="chip-group" id="cg-hist">
+  <div class="chip" data-val="拡大中">拡大中</div>
+  <div class="chip" data-val="縮小中">縮小中</div>
+  <div class="chip" data-val="フラット">フラット</div>
+</div>
+
+<div class="section-label">直近高安付近</div>
+<div class="chip-group" id="cg-nearhl">
+  <div class="chip" data-val="Yes">Yes（近い）</div>
+  <div class="chip" data-val="No">No（遠い）</div>
+</div>
+
+<div class="section-label">方向</div>
+<div class="chip-group" id="cg-dir">
+  <div class="chip" data-val="L" data-cls="sel-L">▲ ロング (L)</div>
+  <div class="chip" data-val="S" data-cls="sel-S">▼ ショート (S)</div>
+</div>
+
+<div class="section-label">確信度</div>
+<div class="chip-group" id="cg-conf">
+  <div class="chip" data-val="A" data-cls="sel-A">A — 高確信</div>
+  <div class="chip" data-val="B" data-cls="sel-B">B — 普通</div>
+  <div class="chip" data-val="C" data-cls="sel-C">C — 低確信</div>
+</div>
+
+<div class="section-label">エントリー根拠</div>
+<div class="chip-group" id="cg-reason">
+  <div class="chip" data-val="PO">PO</div>
+  <div class="chip" data-val="押し目">押し目</div>
+  <div class="chip" data-val="戻り">戻り</div>
+  <div class="chip" data-val="ブレイク">ブレイク</div>
+  <div class="chip" data-val="レンジ反転">レンジ反転</div>
+  <div class="chip" data-val="その他">その他</div>
+</div>
+
+<div class="section-label">管理分岐タイプ</div>
+<div class="chip-group" id="cg-mgmt">
+  <div class="chip" data-val="通常（TP/SLのみ）">通常</div>
+  <div class="chip" data-val="A：包み足撤退">A：包み足</div>
+  <div class="chip" data-val="B：逆行3本撤退">B：逆行3本</div>
+  <div class="chip" data-val="C：時間撤退">C：時間</div>
+  <div class="chip" data-val="D：建値撤退">D：建値</div>
+  <div class="chip" data-val="E：手動判断撤退">E：手動</div>
+</div>
+
+<div class="section-label">+0.5R 到達</div>
+<div class="chip-group" id="cg-r05">
+  <div class="chip" data-val="Yes" data-cls="sel-yes">✓ 到達</div>
+  <div class="chip" data-val="No"  data-cls="sel-no">✗ 未到達</div>
+</div>
+
+<div class="section-label">+1R 到達</div>
+<div class="chip-group" id="cg-r1">
+  <div class="chip" data-val="Yes" data-cls="sel-yes">✓ 到達</div>
+  <div class="chip" data-val="No"  data-cls="sel-no">✗ 未到達</div>
+</div>
+
+<div class="section-label">最終R</div>
+<div class="r-display zero" id="r-display">0.00 R</div>
+<div class="r-buttons">
+  <button class="r-btn" data-r="-1.00">-1R</button>
+  <button class="r-btn" data-r="-0.75">-0.75</button>
+  <button class="r-btn" data-r="-0.50">-0.5</button>
+  <button class="r-btn" data-r="-0.25">-0.25</button>
+  <button class="r-btn" data-r="0.00">BE</button>
+  <button class="r-btn" data-r="0.25">+0.25</button>
+  <button class="r-btn" data-r="0.50">+0.5</button>
+  <button class="r-btn" data-r="0.75">+0.75</button>
+  <button class="r-btn" data-r="1.00">+1R</button>
+  <button class="r-btn" data-r="1.30">+1.3</button>
+  <button class="r-btn" data-r="1.50">+1.5</button>
+  <button class="r-btn" data-r="2.00">+2R</button>
+</div>
+
+<div class="section-label">最大含み益 (R)</div>
+<div class="chip-group" id="cg-maxprofit">
+  <div class="chip" data-val="0.25">0.25</div>
+  <div class="chip" data-val="0.50">0.5</div>
+  <div class="chip" data-val="0.75">0.75</div>
+  <div class="chip" data-val="1.00">1.0</div>
+  <div class="chip" data-val="1.50">1.5</div>
+  <div class="chip" data-val="2.00">2.0</div>
+  <div class="chip" data-val="3.00">3.0+</div>
+</div>
+
+<div class="section-label">最大逆行幅 (R)</div>
+<div class="chip-group" id="cg-maxdraw">
+  <div class="chip" data-val="0.10">0.1</div>
+  <div class="chip" data-val="0.20">0.2</div>
+  <div class="chip" data-val="0.30">0.3</div>
+  <div class="chip" data-val="0.50">0.5</div>
+  <div class="chip" data-val="0.80">0.8</div>
+  <div class="chip" data-val="1.00">1.0</div>
+</div>
+
+<div class="section-label">敗因ラベル（負けのとき選択）</div>
+<div class="chip-group" id="cg-loss">
+  <div class="chip" data-val="①レンジ刈り取り">①レンジ</div>
+  <div class="chip" data-val="②勢い不足">②勢い不足</div>
+  <div class="chip" data-val="③高値更新失敗">③高値更新</div>
+  <div class="chip" data-val="④ルール無視">④ルール無視</div>
+  <div class="chip" data-val="⑤タイミング早い">⑤タイミング早</div>
+  <div class="chip" data-val="⑤タイミング遅い">⑤タイミング遅</div>
+  <div class="chip" data-val="なし（勝ち）">なし</div>
+</div>
+
+<div class="section-label">俺語メモ（自由記入）</div>
+<textarea id="inp-memo" rows="4" placeholder="気づいたこと、相場の状況など自由に…"></textarea>
+
+<button class="submit-btn" id="submit-btn" onclick="submitTrade()">記録する 📝</button>
+```
+
   </div>
 
-  <div class="section-label">直近高安付近</div>
-  <div class="chip-group" id="cg-nearhl">
-    <div class="chip" data-val="Yes">Yes（近い）</div>
-    <div class="chip" data-val="No">No（遠い）</div>
+  <!-- 見送り記録フォーム -->
+
+  <div class="entry-form-section" id="skip-form">
+    <div class="section-label">時間帯</div>
+    <div class="chip-group" id="cg-skip-session">
+      <div class="chip" data-val="東京">東京</div>
+      <div class="chip" data-val="ロンドン">ロンドン</div>
+      <div class="chip" data-val="NY">NY</div>
+      <div class="chip" data-val="東京/ロンドン">東京/ロンドン</div>
+      <div class="chip" data-val="ロンドン/NY">ロンドン/NY</div>
+    </div>
+
+```
+<div class="section-label">見送った方向（想定）</div>
+<div class="chip-group" id="cg-skip-dir">
+  <div class="chip" data-val="L" data-cls="sel-L">▲ ロング (L)</div>
+  <div class="chip" data-val="S" data-cls="sel-S">▼ ショート (S)</div>
+</div>
+
+<div class="section-label">見送り理由メモ</div>
+<textarea id="inp-skip-memo" rows="3" placeholder="どの条件がNGだったか、その後どう動いたかなど…"></textarea>
+
+<button class="submit-btn skip-btn" id="skip-submit-btn" onclick="submitSkip()">見送り記録する 🛑</button>
+```
+
   </div>
-
-  <div class="section-label">方向</div>
-  <div class="chip-group" id="cg-dir">
-    <div class="chip" data-val="L" data-cls="sel-L">▲ ロング (L)</div>
-    <div class="chip" data-val="S" data-cls="sel-S">▼ ショート (S)</div>
-  </div>
-
-  <div class="section-label">確信度</div>
-  <div class="chip-group" id="cg-conf">
-    <div class="chip" data-val="A" data-cls="sel-A">A — 高確信</div>
-    <div class="chip" data-val="B" data-cls="sel-B">B — 普通</div>
-    <div class="chip" data-val="C" data-cls="sel-C">C — 低確信</div>
-  </div>
-
-  <div class="section-label">エントリー根拠</div>
-  <div class="chip-group" id="cg-reason">
-    <div class="chip" data-val="PO">PO</div>
-    <div class="chip" data-val="押し目">押し目</div>
-    <div class="chip" data-val="戻り">戻り</div>
-    <div class="chip" data-val="ブレイク">ブレイク</div>
-    <div class="chip" data-val="レンジ反転">レンジ反転</div>
-    <div class="chip" data-val="その他">その他</div>
-  </div>
-
-  <div class="section-label">管理分岐タイプ</div>
-  <div class="chip-group" id="cg-mgmt">
-    <div class="chip" data-val="通常（TP/SLのみ）">通常</div>
-    <div class="chip" data-val="A：包み足撤退">A：包み足</div>
-    <div class="chip" data-val="B：逆行3本撤退">B：逆行3本</div>
-    <div class="chip" data-val="C：時間撤退">C：時間</div>
-    <div class="chip" data-val="D：建値撤退">D：建値</div>
-    <div class="chip" data-val="E：手動判断撤退">E：手動</div>
-  </div>
-
-  <div class="section-label">+0.5R 到達</div>
-  <div class="chip-group" id="cg-r05">
-    <div class="chip" data-val="Yes" data-cls="sel-yes">✓ 到達</div>
-    <div class="chip" data-val="No"  data-cls="sel-no">✗ 未到達</div>
-  </div>
-
-  <div class="section-label">+1R 到達</div>
-  <div class="chip-group" id="cg-r1">
-    <div class="chip" data-val="Yes" data-cls="sel-yes">✓ 到達</div>
-    <div class="chip" data-val="No"  data-cls="sel-no">✗ 未到達</div>
-  </div>
-
-  <div class="section-label">最終R</div>
-  <div class="r-display zero" id="r-display">0.00 R</div>
-  <div class="r-buttons">
-    <button class="r-btn" data-r="-1.00">-1R</button>
-    <button class="r-btn" data-r="-0.75">-0.75</button>
-    <button class="r-btn" data-r="-0.50">-0.5</button>
-    <button class="r-btn" data-r="-0.25">-0.25</button>
-    <button class="r-btn" data-r="0.00">BE</button>
-    <button class="r-btn" data-r="0.25">+0.25</button>
-    <button class="r-btn" data-r="0.50">+0.5</button>
-    <button class="r-btn" data-r="0.75">+0.75</button>
-    <button class="r-btn" data-r="1.00">+1R</button>
-    <button class="r-btn" data-r="1.30">+1.3</button>
-    <button class="r-btn" data-r="1.50">+1.5</button>
-    <button class="r-btn" data-r="2.00">+2R</button>
-  </div>
-
-  <div class="section-label">最大含み益 (R)</div>
-  <div class="chip-group" id="cg-maxprofit">
-    <div class="chip" data-val="0.25">0.25</div>
-    <div class="chip" data-val="0.50">0.5</div>
-    <div class="chip" data-val="0.75">0.75</div>
-    <div class="chip" data-val="1.00">1.0</div>
-    <div class="chip" data-val="1.50">1.5</div>
-    <div class="chip" data-val="2.00">2.0</div>
-    <div class="chip" data-val="3.00">3.0+</div>
-  </div>
-
-  <div class="section-label">最大逆行幅 (R)</div>
-  <div class="chip-group" id="cg-maxdraw">
-    <div class="chip" data-val="0.10">0.1</div>
-    <div class="chip" data-val="0.20">0.2</div>
-    <div class="chip" data-val="0.30">0.3</div>
-    <div class="chip" data-val="0.50">0.5</div>
-    <div class="chip" data-val="0.80">0.8</div>
-    <div class="chip" data-val="1.00">1.0</div>
-  </div>
-
-  <div class="section-label">敗因ラベル（負けのとき選択）</div>
-  <div class="chip-group" id="cg-loss">
-    <div class="chip" data-val="①レンジ刈り取り">①レンジ</div>
-    <div class="chip" data-val="②勢い不足">②勢い不足</div>
-    <div class="chip" data-val="③高値更新失敗">③高値更新</div>
-    <div class="chip" data-val="④ルール無視">④ルール無視</div>
-    <div class="chip" data-val="⑤タイミング早い">⑤タイミング早</div>
-    <div class="chip" data-val="⑤タイミング遅い">⑤タイミング遅</div>
-    <div class="chip" data-val="なし（勝ち）">なし</div>
-  </div>
-
-  <div class="section-label">俺語メモ（自由記入）</div>
-  <textarea id="inp-memo" rows="4" placeholder="気づいたこと、相場の状況など自由に…"></textarea>
-
-  <button class="submit-btn" id="submit-btn" onclick="submitTrade()">記録する 📝</button>
 
 </div>
 
 <!-- ②履歴 -->
+
 <div class="page" id="page-history">
+  <!-- フィルター -->
+  <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="chip selected" data-filter="all" onclick="filterHistory('all',this)" style="font-size:11px;padding:5px 12px;">すべて</button>
+    <button class="chip" data-filter="normal" onclick="filterHistory('normal',this)" style="font-size:11px;padding:5px 12px;">正規</button>
+    <button class="chip" data-filter="skipped" onclick="filterHistory('skipped',this)" style="font-size:11px;padding:5px 12px;">見送り</button>
+    <button class="chip" data-filter="violation" onclick="filterHistory('violation',this)" style="font-size:11px;padding:5px 12px;">違反</button>
+  </div>
   <div id="history-list"><div class="loading">読み込み中…</div></div>
 </div>
 
 <!-- ③統計 -->
+
 <div class="page" id="page-stats">
   <div id="stats-content"><div class="loading">読み込み中…</div></div>
   <button class="export-btn" onclick="exportCSV()">📥 CSVエクスポート</button>
 </div>
 
 <!-- ④設定 -->
+
 <div class="page" id="page-config">
   <div class="section-label" style="margin-top:4px;">Supabase接続設定</div>
   <div class="config-card">
@@ -468,41 +713,23 @@
   </div>
   <button class="save-config-btn" onclick="saveConfig()">保存して接続</button>
 
-  <div class="section-label" style="margin-top:24px;">Supabase テーブルSQL</div>
+  <div class="section-label" style="margin-top:24px;">Supabase テーブルSQL（新規の場合）</div>
   <div class="config-card">
-    <div class="config-label">↓ これをSupabaseのSQL Editorで実行してね</div>
-    <textarea readonly rows="18" style="font-size:10px;font-family:'JetBrains Mono',monospace;line-height:1.5;background:var(--bg);border-color:var(--border);color:var(--muted);">
-CREATE TABLE fx_trades (
-  id          bigserial PRIMARY KEY,
-  created_at  timestamptz DEFAULT now(),
-  trade_date  date        NOT NULL,
-  weekday     text,
-  session     text,
-  env_4h      text,
-  hist_1h     text,
-  near_hl     text,
-  direction   text,
-  confidence  text,
-  entry_reason text,
-  mgmt_type   text,
-  reached_05r text,
-  reached_1r  text,
-  final_r     numeric,
-  max_profit_r numeric,
-  max_draw_r  numeric,
-  loss_label  text,
-  memo        text
-);
--- Row Level Security (任意)
-ALTER TABLE fx_trades ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
+    <div class="config-label">↓ Supabaseのテーブルにカラム追加が必要な場合はこちら</div>
+    <textarea readonly rows="8" style="font-size:10px;font-family:'JetBrains Mono',monospace;line-height:1.5;background:var(--bg);border-color:var(--border);color:var(--muted);">
+-- 既存テーブルへのカラム追加
+ALTER TABLE fx_trades
+  ADD COLUMN IF NOT EXISTS entry_type text DEFAULT 'normal',
+  ADD COLUMN IF NOT EXISTS check_trend text,
+  ADD COLUMN IF NOT EXISTS check_hist text,
+  ADD COLUMN IF NOT EXISTS check_hl text;
     </textarea>
   </div>
 </div>
 
 <!-- ⑤計算 -->
-<div class="page" id="page-calc">
 
+<div class="page" id="page-calc">
   <div class="section-label" style="margin-top:4px;">ロット・pips を入力</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
     <div>
@@ -516,8 +743,6 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
         oninput="calcConvert()" style="font-size:16px;padding:12px;">
     </div>
   </div>
-
-  <!-- 結果カード -->
   <div id="calc-result" style="margin-top:16px;display:none;">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
       <div style="text-align:center;margin-bottom:16px;">
@@ -536,21 +761,13 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
       </div>
     </div>
   </div>
-
-  <!-- 早見表 -->
   <div class="section-label" style="margin-top:24px;">早見表（入力ロット基準）</div>
-  <div id="calc-table-wrap">
-    <div class="table-wrap">
-      <table class="stats-table" id="calc-table">
-        <thead><tr>
-          <th>pips</th><th>R換算</th><th>円（概算）</th><th>メモ</th>
-        </tr></thead>
-        <tbody id="calc-tbody"></tbody>
-      </table>
-    </div>
+  <div class="table-wrap">
+    <table class="stats-table" id="calc-table">
+      <thead><tr><th>pips</th><th>R換算</th><th>円（概算）</th><th>メモ</th></tr></thead>
+      <tbody id="calc-tbody"></tbody>
+    </table>
   </div>
-
-  <!-- SL/TP早見表 -->
   <div class="section-label" style="margin-top:20px;">SL幅ごとの損失金額</div>
   <div class="table-wrap">
     <table class="stats-table">
@@ -558,10 +775,10 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
       <tbody id="sl-tbody"></tbody>
     </table>
   </div>
-
 </div>
 
 <!-- TAB BAR -->
+
 <nav class="tabbar">
   <button class="tab-btn active" onclick="switchTab('record',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
@@ -586,38 +803,133 @@ CREATE POLICY "allow all" ON fx_trades FOR ALL USING (true);
 </nav>
 
 <!-- TOAST -->
+
 <div class="toast" id="toast"></div>
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">トレード編集 ✏️</div>
+    <input type="hidden" id="edit-id">
+
+```
+<div class="section-label" style="margin-top:4px;">日付</div>
+<input type="date" id="edit-date" class="config-input" style="font-size:14px;padding:10px;">
+
+<div class="section-label">時間帯</div>
+<div class="chip-group" id="edit-cg-session">
+  <div class="chip" data-val="東京">東京</div>
+  <div class="chip" data-val="ロンドン">ロンドン</div>
+  <div class="chip" data-val="NY">NY</div>
+  <div class="chip" data-val="東京/ロンドン">東京/ロンドン</div>
+  <div class="chip" data-val="ロンドン/NY">ロンドン/NY</div>
+</div>
+
+<div class="section-label">方向</div>
+<div class="chip-group" id="edit-cg-dir">
+  <div class="chip" data-val="L" data-cls="sel-L">▲ ロング (L)</div>
+  <div class="chip" data-val="S" data-cls="sel-S">▼ ショート (S)</div>
+</div>
+
+<div class="section-label">確信度</div>
+<div class="chip-group" id="edit-cg-conf">
+  <div class="chip" data-val="A" data-cls="sel-A">A — 高確信</div>
+  <div class="chip" data-val="B" data-cls="sel-B">B — 普通</div>
+  <div class="chip" data-val="C" data-cls="sel-C">C — 低確信</div>
+</div>
+
+<div class="section-label">管理分岐タイプ</div>
+<div class="chip-group" id="edit-cg-mgmt">
+  <div class="chip" data-val="通常（TP/SLのみ）">通常</div>
+  <div class="chip" data-val="A：包み足撤退">A：包み足</div>
+  <div class="chip" data-val="B：逆行3本撤退">B：逆行3本</div>
+  <div class="chip" data-val="C：時間撤退">C：時間</div>
+  <div class="chip" data-val="D：建値撤退">D：建値</div>
+  <div class="chip" data-val="E：手動判断撤退">E：手動</div>
+</div>
+
+<div class="section-label">最終R</div>
+<div class="r-display zero" id="edit-r-display">0.00 R</div>
+<div class="r-buttons" id="edit-r-buttons">
+  <button class="r-btn" data-r="-1.00">-1R</button>
+  <button class="r-btn" data-r="-0.75">-0.75</button>
+  <button class="r-btn" data-r="-0.50">-0.5</button>
+  <button class="r-btn" data-r="-0.25">-0.25</button>
+  <button class="r-btn" data-r="0.00">BE</button>
+  <button class="r-btn" data-r="0.25">+0.25</button>
+  <button class="r-btn" data-r="0.50">+0.5</button>
+  <button class="r-btn" data-r="0.75">+0.75</button>
+  <button class="r-btn" data-r="1.00">+1R</button>
+  <button class="r-btn" data-r="1.30">+1.3</button>
+  <button class="r-btn" data-r="1.50">+1.5</button>
+  <button class="r-btn" data-r="2.00">+2R</button>
+</div>
+
+<div class="section-label">敗因ラベル</div>
+<div class="chip-group" id="edit-cg-loss">
+  <div class="chip" data-val="①レンジ刈り取り">①レンジ</div>
+  <div class="chip" data-val="②勢い不足">②勢い不足</div>
+  <div class="chip" data-val="③高値更新失敗">③高値更新</div>
+  <div class="chip" data-val="④ルール無視">④ルール無視</div>
+  <div class="chip" data-val="⑤タイミング早い">⑤タイミング早</div>
+  <div class="chip" data-val="⑤タイミング遅い">⑤タイミング遅</div>
+  <div class="chip" data-val="なし（勝ち）">なし</div>
+</div>
+
+<div class="section-label">メモ</div>
+<textarea id="edit-memo" rows="3"></textarea>
+
+<div class="modal-btns">
+  <button class="modal-cancel" onclick="closeEditModal()">キャンセル</button>
+  <button class="modal-save" onclick="saveEdit()">保存する</button>
+</div>
+```
+
+  </div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
 let sb = null;
+let currentFilter = 'all';
+let allHistoryData = [];
+
+const checks = { trend: null, hist: null, hl: null };
+let entryType = 'normal'; // 'normal' | 'skipped' | 'violation'
+
 const state = {
   session: null, env4h: null, hist: null, nearhl: null,
   dir: null, conf: null, reason: null, mgmt: null,
   r05: null, r1: null, finalR: null,
-  maxProfit: null, maxDraw: null, lossLabel: null
+  maxProfit: null, maxDraw: null, lossLabel: null,
+  skipSession: null, skipDir: null
+};
+
+const editState = {
+  session: null, dir: null, conf: null, mgmt: null,
+  finalR: null, lossLabel: null
 };
 
 // ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  // 今日の日付をセット
   const today = new Date();
   document.getElementById('inp-date').value = today.toISOString().split('T')[0];
-
-  // 設定ロード
   const url = localStorage.getItem('sb_url') || '';
   const key = localStorage.getItem('sb_key') || '';
   document.getElementById('cfg-url').value = url;
   document.getElementById('cfg-key').value = key;
   if (url && key) initSupabase(url, key);
-
-  // チップのクリックハンドラ登録
   setupChipGroups();
   setupRButtons();
+  setupEditRButtons();
+  renderCalcTable(10000);
+  renderSlTable(10000);
 });
 
 function initSupabase(url, key) {
@@ -632,22 +944,96 @@ function initSupabase(url, key) {
 }
 
 // ══════════════════════════════════════════════
+// CHECKLIST
+// ══════════════════════════════════════════════
+function setCheck(key, val, btn) {
+  checks[key] = val;
+  // 同グループのボタンリセット
+  btn.closest('.check-btns').querySelectorAll('.check-btn').forEach(b => {
+    b.classList.remove('ok', 'ng');
+  });
+  btn.classList.add(val === 'ok' ? 'ok' : 'ng');
+  updateChecklistResult();
+}
+
+function updateChecklistResult() {
+  const values = Object.values(checks);
+  if (values.includes(null)) {
+    document.getElementById('result-ok').style.display = 'none';
+    document.getElementById('result-ng').style.display = 'none';
+    document.getElementById('ng-action').classList.remove('show');
+    document.getElementById('entry-form').classList.remove('show');
+    document.getElementById('skip-form').classList.remove('show');
+    return;
+  }
+
+  const allOk = values.every(v => v === 'ok');
+
+  if (allOk) {
+    document.getElementById('result-ok').style.display = 'block';
+    document.getElementById('result-ng').style.display = 'none';
+    document.getElementById('ng-action').classList.remove('show');
+    document.getElementById('skip-form').classList.remove('show');
+    entryType = 'normal';
+    document.getElementById('entry-form').classList.add('show');
+    updateSubmitBtn();
+  } else {
+    document.getElementById('result-ok').style.display = 'none';
+    document.getElementById('result-ng').style.display = 'block';
+    document.getElementById('ng-action').classList.add('show');
+    document.getElementById('entry-form').classList.remove('show');
+    document.getElementById('skip-form').classList.remove('show');
+    entryType = null;
+  }
+}
+
+function setEntryType(type, btn) {
+  entryType = type;
+  document.querySelectorAll('.entry-type-btn').forEach(b => {
+    b.classList.remove('sel-skip', 'sel-violation');
+  });
+  btn.classList.add(type === 'skipped' ? 'sel-skip' : 'sel-violation');
+
+  if (type === 'skipped') {
+    document.getElementById('entry-form').classList.remove('show');
+    document.getElementById('skip-form').classList.add('show');
+  } else {
+    document.getElementById('skip-form').classList.remove('show');
+    document.getElementById('entry-form').classList.add('show');
+    updateSubmitBtn();
+  }
+}
+
+function updateSubmitBtn() {
+  const btn = document.getElementById('submit-btn');
+  if (entryType === 'violation') {
+    btn.textContent = '⚡ ルール違反エントリーを記録';
+    btn.className = 'submit-btn violation-btn';
+  } else {
+    btn.textContent = '記録する 📝';
+    btn.className = 'submit-btn';
+  }
+}
+
+// ══════════════════════════════════════════════
 // CHIP SETUP
 // ══════════════════════════════════════════════
 const chipMap = {
-  'cg-session':   'session',
-  'cg-env4h':     'env4h',
-  'cg-hist':      'hist',
-  'cg-nearhl':    'nearhl',
-  'cg-dir':       'dir',
-  'cg-conf':      'conf',
-  'cg-reason':    'reason',
-  'cg-mgmt':      'mgmt',
-  'cg-r05':       'r05',
-  'cg-r1':        'r1',
-  'cg-maxprofit': 'maxProfit',
-  'cg-maxdraw':   'maxDraw',
-  'cg-loss':      'lossLabel',
+  'cg-session':      'session',
+  'cg-env4h':        'env4h',
+  'cg-hist':         'hist',
+  'cg-nearhl':       'nearhl',
+  'cg-dir':          'dir',
+  'cg-conf':         'conf',
+  'cg-reason':       'reason',
+  'cg-mgmt':         'mgmt',
+  'cg-r05':          'r05',
+  'cg-r1':           'r1',
+  'cg-maxprofit':    'maxProfit',
+  'cg-maxdraw':      'maxDraw',
+  'cg-loss':         'lossLabel',
+  'cg-skip-session': 'skipSession',
+  'cg-skip-dir':     'skipDir',
 };
 
 function setupChipGroups() {
@@ -656,9 +1042,7 @@ function setupChipGroups() {
     if (!group) return;
     group.querySelectorAll('.chip').forEach(chip => {
       chip.addEventListener('click', () => {
-        group.querySelectorAll('.chip').forEach(c => {
-          c.className = 'chip'; // リセット
-        });
+        group.querySelectorAll('.chip').forEach(c => c.className = 'chip');
         const cls = chip.dataset.cls || 'selected';
         chip.classList.add(cls === 'selected' ? 'selected' : cls);
         state[stateKey] = chip.dataset.val;
@@ -668,9 +1052,9 @@ function setupChipGroups() {
 }
 
 function setupRButtons() {
-  document.querySelectorAll('.r-btn').forEach(btn => {
+  document.querySelectorAll('#entry-form .r-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.r-btn').forEach(b => b.className = 'r-btn');
+      document.querySelectorAll('#entry-form .r-btn').forEach(b => b.className = 'r-btn');
       const r = parseFloat(btn.dataset.r);
       state.finalR = r;
       const disp = document.getElementById('r-display');
@@ -682,14 +1066,13 @@ function setupRButtons() {
 }
 
 // ══════════════════════════════════════════════
-// SUBMIT
+// SUBMIT（通常 & 違反）
 // ══════════════════════════════════════════════
 async function submitTrade() {
   if (!sb) { showToast('先に設定でSupabaseを接続してね', true); return; }
-
   const dateVal = document.getElementById('inp-date').value;
   if (!dateVal) { showToast('日付を入力してね', true); return; }
-  if (!state.dir)     { showToast('方向を選んでね', true); return; }
+  if (!state.dir) { showToast('方向を選んでね', true); return; }
   if (state.finalR === null) { showToast('最終Rを選んでね', true); return; }
 
   const btn = document.getElementById('submit-btn');
@@ -697,47 +1080,93 @@ async function submitTrade() {
 
   const d = new Date(dateVal);
   const weekdays = ['日','月','火','水','木','金','土'];
-  const weekday = weekdays[d.getDay()];
 
   const payload = {
-    trade_date:    dateVal,
-    weekday,
-    session:       state.session,
-    env_4h:        state.env4h,
-    hist_1h:       state.hist,
-    near_hl:       state.nearhl,
-    direction:     state.dir,
-    confidence:    state.conf,
-    entry_reason:  state.reason,
-    mgmt_type:     state.mgmt,
-    reached_05r:   state.r05,
-    reached_1r:    state.r1,
-    final_r:       state.finalR,
-    max_profit_r:  state.maxProfit ? parseFloat(state.maxProfit) : null,
-    max_draw_r:    state.maxDraw   ? parseFloat(state.maxDraw)   : null,
-    loss_label:    state.lossLabel,
-    memo:          document.getElementById('inp-memo').value || null,
+    trade_date:   dateVal,
+    weekday:      weekdays[d.getDay()],
+    entry_type:   entryType === 'violation' ? 'violation' : 'normal',
+    check_trend:  checks.trend,
+    check_hist:   checks.hist,
+    check_hl:     checks.hl,
+    session:      state.session,
+    env_4h:       state.env4h,
+    hist_1h:      state.hist,
+    near_hl:      state.nearhl,
+    direction:    state.dir,
+    confidence:   state.conf,
+    entry_reason: state.reason,
+    mgmt_type:    state.mgmt,
+    reached_05r:  state.r05,
+    reached_1r:   state.r1,
+    final_r:      state.finalR,
+    max_profit_r: state.maxProfit ? parseFloat(state.maxProfit) : null,
+    max_draw_r:   state.maxDraw   ? parseFloat(state.maxDraw)   : null,
+    loss_label:   state.lossLabel,
+    memo:         document.getElementById('inp-memo').value || null,
   };
 
   const { error } = await sb.from('fx_trades').insert([payload]);
-
-  btn.disabled = false; btn.textContent = '記録する 📝';
+  btn.disabled = false;
+  updateSubmitBtn();
 
   if (error) { showToast('エラー: ' + error.message, true); return; }
+  showToast(entryType === 'violation' ? '⚡ 違反エントリーを記録しました' : '記録しました！ ✓');
+  resetForm();
+}
 
-  showToast('記録しました！ ✓');
+// ══════════════════════════════════════════════
+// SUBMIT（見送り）
+// ══════════════════════════════════════════════
+async function submitSkip() {
+  if (!sb) { showToast('先に設定でSupabaseを接続してね', true); return; }
+  const dateVal = document.getElementById('inp-date').value;
+  if (!dateVal) { showToast('日付を入力してね', true); return; }
+
+  const btn = document.getElementById('skip-submit-btn');
+  btn.disabled = true; btn.textContent = '記録中…';
+
+  const d = new Date(dateVal);
+  const weekdays = ['日','月','火','水','木','金','土'];
+
+  const payload = {
+    trade_date:  dateVal,
+    weekday:     weekdays[d.getDay()],
+    entry_type:  'skipped',
+    check_trend: checks.trend,
+    check_hist:  checks.hist,
+    check_hl:    checks.hl,
+    session:     state.skipSession,
+    direction:   state.skipDir,
+    final_r:     null,
+    memo:        document.getElementById('inp-skip-memo').value || null,
+  };
+
+  const { error } = await sb.from('fx_trades').insert([payload]);
+  btn.disabled = false; btn.textContent = '見送り記録する 🛑';
+
+  if (error) { showToast('エラー: ' + error.message, true); return; }
+  showToast('🛑 見送り記録しました！');
   resetForm();
 }
 
 function resetForm() {
   document.querySelectorAll('.chip').forEach(c => c.className = 'chip');
+  document.querySelectorAll('.check-btn').forEach(b => b.classList.remove('ok','ng'));
   document.querySelectorAll('.r-btn').forEach(b => b.className = 'r-btn');
+  document.querySelectorAll('.entry-type-btn').forEach(b => b.classList.remove('sel-skip','sel-violation'));
   Object.keys(state).forEach(k => state[k] = null);
+  Object.keys(checks).forEach(k => checks[k] = null);
+  entryType = 'normal';
   document.getElementById('r-display').textContent = '0.00 R';
   document.getElementById('r-display').className = 'r-display zero';
   document.getElementById('inp-memo').value = '';
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('inp-date').value = today;
+  document.getElementById('inp-skip-memo').value = '';
+  document.getElementById('result-ok').style.display = 'none';
+  document.getElementById('result-ng').style.display = 'none';
+  document.getElementById('ng-action').classList.remove('show');
+  document.getElementById('entry-form').classList.remove('show');
+  document.getElementById('skip-form').classList.remove('show');
+  document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
 }
 
 // ══════════════════════════════════════════════
@@ -749,28 +1178,66 @@ async function loadHistory() {
   el.innerHTML = '<div class="loading">読み込み中…</div>';
 
   const { data, error } = await sb.from('fx_trades')
-    .select('*').order('trade_date', { ascending: false }).limit(100);
+    .select('*').order('trade_date', { ascending: false }).limit(200);
 
   if (error) { el.innerHTML = `<div class="empty">エラー: ${error.message}</div>`; return; }
-  if (!data.length) { el.innerHTML = '<div class="empty">まだ記録がないよ</div>'; return; }
+  allHistoryData = data || [];
+  renderHistoryList();
+}
+
+function filterHistory(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('[data-filter]').forEach(b => b.className = 'chip');
+  btn.classList.add('selected');
+  renderHistoryList();
+}
+
+function renderHistoryList() {
+  const el = document.getElementById('history-list');
+  let data = allHistoryData;
+
+  if (currentFilter !== 'all') {
+    data = data.filter(t => {
+      const type = t.entry_type || 'normal';
+      return type === currentFilter;
+    });
+  }
+
+  if (!data.length) { el.innerHTML = '<div class="empty">該当するデータがないよ</div>'; return; }
 
   el.innerHTML = data.map(t => {
-    const r = parseFloat(t.final_r) || 0;
-    const cls = r > 0 ? 'win' : r < 0 ? 'loss' : 'be';
-    const rCls = r > 0 ? 'pos' : r < 0 ? 'neg' : 'zero';
-    const rStr = (r >= 0 ? '+' : '') + r.toFixed(2) + 'R';
+    const type = t.entry_type || 'normal';
+    const r = parseFloat(t.final_r);
+    const isSkipped = type === 'skipped';
+
+    let cardCls = 'be';
+    if (isSkipped) cardCls = 'skipped';
+    else if (type === 'violation') cardCls = 'violation';
+    else if (!isNaN(r)) cardCls = r > 0 ? 'win' : r < 0 ? 'loss' : 'be';
+
+    const rStr = isSkipped ? '見送り' : (isNaN(r) ? '-' : (r >= 0 ? '+' : '') + r.toFixed(2) + 'R');
+    const rCls = isSkipped ? 'zero' : (!isNaN(r) ? (r > 0 ? 'pos' : r < 0 ? 'neg' : 'zero') : 'zero');
+
+    let typeTag = '';
+    if (type === 'skipped') typeTag = '<span class="rc-tag type-skip">🛑 見送り</span>';
+    else if (type === 'violation') typeTag = '<span class="rc-tag type-violation">⚡ 違反</span>';
+    else typeTag = '<span class="rc-tag type-normal">✓ 正規</span>';
+
     const tags = [
+      typeTag,
       t.direction ? `<span class="rc-tag dir-${t.direction}">${t.direction}</span>` : '',
       t.confidence ? `<span class="rc-tag conf-${t.confidence}">${t.confidence}</span>` : '',
       t.session  ? `<span class="rc-tag">${t.session}</span>`  : '',
       t.env_4h   ? `<span class="rc-tag">${t.env_4h}</span>`   : '',
-      t.mgmt_type ? `<span class="rc-tag">${t.mgmt_type.slice(0,4)}</span>` : '',
       t.loss_label && t.loss_label !== 'なし（勝ち）' ? `<span class="rc-tag" style="border-color:var(--red);color:var(--red)">${t.loss_label}</span>` : '',
     ].filter(Boolean).join('');
 
     return `
-    <div class="record-card ${cls}" data-id="${t.id}">
-      <button class="delete-btn" onclick="deleteTrade(${t.id})">✕</button>
+    <div class="record-card ${cardCls}" data-id="${t.id}">
+      <div class="rc-actions">
+        <button class="edit-btn" onclick="openEditModal(${t.id})">✏️</button>
+        <button class="delete-btn" onclick="deleteTrade(${t.id})">✕</button>
+      </div>
       <div class="rc-top">
         <div class="rc-date">${t.trade_date} ${t.weekday || ''}</div>
         <div class="rc-r ${rCls}">${rStr}</div>
@@ -789,6 +1256,130 @@ async function deleteTrade(id) {
 }
 
 // ══════════════════════════════════════════════
+// EDIT MODAL
+// ══════════════════════════════════════════════
+function setupEditRButtons() {
+  document.querySelectorAll('#edit-r-buttons .r-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#edit-r-buttons .r-btn').forEach(b => b.className = 'r-btn');
+      const r = parseFloat(btn.dataset.r);
+      editState.finalR = r;
+      const disp = document.getElementById('edit-r-display');
+      disp.textContent = (r >= 0 ? '+' : '') + r.toFixed(2) + ' R';
+      disp.className = 'r-display ' + (r > 0 ? 'pos' : r < 0 ? 'neg' : 'zero');
+      btn.classList.add(r >= 0 ? 'selected-pos' : 'selected-neg');
+    });
+  });
+
+  // 編集モーダルのチップ
+  const editChipMap = {
+    'edit-cg-session': 'session',
+    'edit-cg-dir':     'dir',
+    'edit-cg-conf':    'conf',
+    'edit-cg-mgmt':    'mgmt',
+    'edit-cg-loss':    'lossLabel',
+  };
+  Object.entries(editChipMap).forEach(([groupId, key]) => {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        group.querySelectorAll('.chip').forEach(c => c.className = 'chip');
+        const cls = chip.dataset.cls || 'selected';
+        chip.classList.add(cls === 'selected' ? 'selected' : cls);
+        editState[key] = chip.dataset.val;
+      });
+    });
+  });
+}
+
+function openEditModal(id) {
+  const trade = allHistoryData.find(t => t.id === id);
+  if (!trade) return;
+
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-date').value = trade.trade_date || '';
+  document.getElementById('edit-memo').value = trade.memo || '';
+
+  // チップ選択リセット＆復元
+  const editChipMap = {
+    'edit-cg-session': trade.session,
+    'edit-cg-dir':     trade.direction,
+    'edit-cg-conf':    trade.confidence,
+    'edit-cg-mgmt':    trade.mgmt_type,
+    'edit-cg-loss':    trade.loss_label,
+  };
+  Object.entries(editChipMap).forEach(([groupId, val]) => {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.chip').forEach(c => c.className = 'chip');
+    if (val) {
+      const target = group.querySelector(`[data-val="${val}"]`);
+      if (target) {
+        const cls = target.dataset.cls || 'selected';
+        target.classList.add(cls === 'selected' ? 'selected' : cls);
+      }
+    }
+  });
+
+  // editState復元
+  editState.session  = trade.session;
+  editState.dir      = trade.direction;
+  editState.conf     = trade.confidence;
+  editState.mgmt     = trade.mgmt_type;
+  editState.lossLabel = trade.loss_label;
+  editState.finalR   = trade.final_r !== null ? parseFloat(trade.final_r) : null;
+
+  // Rボタン復元
+  document.querySelectorAll('#edit-r-buttons .r-btn').forEach(b => b.className = 'r-btn');
+  const disp = document.getElementById('edit-r-display');
+  if (editState.finalR !== null) {
+    const r = editState.finalR;
+    disp.textContent = (r >= 0 ? '+' : '') + r.toFixed(2) + ' R';
+    disp.className = 'r-display ' + (r > 0 ? 'pos' : r < 0 ? 'neg' : 'zero');
+    const rBtn = document.querySelector(`#edit-r-buttons [data-r="${r.toFixed(2)}"]`);
+    if (rBtn) rBtn.classList.add(r >= 0 ? 'selected-pos' : 'selected-neg');
+  } else {
+    disp.textContent = '0.00 R';
+    disp.className = 'r-display zero';
+  }
+
+  document.getElementById('edit-modal').classList.add('show');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('show');
+}
+
+async function saveEdit() {
+  const id = document.getElementById('edit-id').value;
+  const dateVal = document.getElementById('edit-date').value;
+  if (!id || !dateVal) { showToast('入力を確認してね', true); return; }
+
+  const d = new Date(dateVal);
+  const weekdays = ['日','月','火','水','木','金','土'];
+
+  const payload = {
+    trade_date: dateVal,
+    weekday:    weekdays[d.getDay()],
+    session:    editState.session,
+    direction:  editState.dir,
+    confidence: editState.conf,
+    mgmt_type:  editState.mgmt,
+    final_r:    editState.finalR,
+    loss_label: editState.lossLabel,
+    memo:       document.getElementById('edit-memo').value || null,
+  };
+
+  const { error } = await sb.from('fx_trades').update(payload).eq('id', id);
+  if (error) { showToast('エラー: ' + error.message, true); return; }
+
+  showToast('更新しました！ ✓');
+  closeEditModal();
+  loadHistory();
+}
+
+// ══════════════════════════════════════════════
 // STATS
 // ══════════════════════════════════════════════
 async function loadStats() {
@@ -799,18 +1390,26 @@ async function loadStats() {
   const { data } = await sb.from('fx_trades').select('*');
   if (!data || !data.length) { el.innerHTML = '<div class="empty">データなし</div>'; return; }
 
-  const total = data.length;
-  const wins  = data.filter(t => parseFloat(t.final_r) > 0).length;
-  const totalR = data.reduce((s, t) => s + (parseFloat(t.final_r) || 0), 0);
+  // 正規＋違反のみを集計対象に
+  const tradedData = data.filter(t => (t.entry_type || 'normal') !== 'skipped');
+  const skippedData = data.filter(t => (t.entry_type || 'normal') === 'skipped');
+  const violationData = data.filter(t => t.entry_type === 'violation');
+  const normalData = data.filter(t => (t.entry_type || 'normal') === 'normal');
+
+  const total = tradedData.length;
+  if (!total) { el.innerHTML = '<div class="empty">エントリーデータなし</div>'; return; }
+
+  const wins  = tradedData.filter(t => parseFloat(t.final_r) > 0).length;
+  const totalR = tradedData.reduce((s, t) => s + (parseFloat(t.final_r) || 0), 0);
   const avgR  = totalR / total;
   const winRate = wins / total;
 
-  const groupStat = (key, values) => values.map(v => {
-    const rows = data.filter(t => t[key] === v);
-    if (!rows.length) return null;
-    const w = rows.filter(t => parseFloat(t.final_r) > 0).length;
-    const avg = rows.reduce((s,t) => s+(parseFloat(t.final_r)||0), 0) / rows.length;
-    return { label: v, count: rows.length, wr: (w/rows.length*100).toFixed(0)+'%', avg: avg.toFixed(2) };
+  const groupStat = (rows, key, values) => values.map(v => {
+    const r = rows.filter(t => t[key] === v);
+    if (!r.length) return null;
+    const w = r.filter(t => parseFloat(t.final_r) > 0).length;
+    const avg = r.reduce((s,t) => s+(parseFloat(t.final_r)||0), 0) / r.length;
+    return { label: v, count: r.length, wr: (w/r.length*100).toFixed(0)+'%', avg: avg.toFixed(2) };
   }).filter(Boolean);
 
   const tableHtml = (headers, rows) => `
@@ -820,12 +1419,11 @@ async function loadStats() {
       <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c??'-'}</td>`).join('')}</tr>`).join('')}</tbody>
     </table></div>`;
 
-  const confStats = groupStat('confidence', ['A','B','C']);
-  const dirStats  = groupStat('direction',  ['L','S']);
-  const sessStats = groupStat('session', ['東京','ロンドン','NY','東京/ロンドン','ロンドン/NY']);
-  const envStats  = groupStat('env_4h', ['推進','フェイク連発','揺さぶり','不明']);
-  const mgmtStats = groupStat('mgmt_type', ['通常（TP/SLのみ）','A：包み足撤退','B：逆行3本撤退','C：時間撤退','D：建値撤退','E：手動判断撤退']);
-  const lossStats = groupStat('loss_label', ['①レンジ刈り取り','②勢い不足','③高値更新失敗','④ルール無視','⑤タイミング早い','⑤タイミング遅い']);
+  // 違反比較
+  const nWins = normalData.filter(t => parseFloat(t.final_r) > 0).length;
+  const nAvg  = normalData.length ? normalData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/normalData.length : 0;
+  const vWins = violationData.filter(t => parseFloat(t.final_r) > 0).length;
+  const vAvg  = violationData.length ? violationData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/violationData.length : 0;
 
   el.innerHTML = `
     <div class="stats-grid">
@@ -835,23 +1433,30 @@ async function loadStats() {
       <div class="stat-card"><div class="stat-label">平均R</div><div class="stat-val" style="color:${avgR>=0?'var(--green)':'var(--red)'}">${avgR>=0?'+':''}${avgR.toFixed(2)}</div></div>
     </div>
 
-    <div class="section-label" style="margin-top:20px;">確信度別</div>
-    ${tableHtml(['確信度','件数','勝率','平均R'], confStats.map(r=>[r.label,r.count,r.wr,r.avg]))}
+    <div class="section-label" style="margin-top:20px;">🔍 ルール遵守 vs 違反</div>
+    ${tableHtml(['種別','件数','勝率','平均R'],[
+      ['✓ 正規', normalData.length, normalData.length?(nWins/normalData.length*100).toFixed(0)+'%':'-', nAvg.toFixed(2)],
+      ['⚡ 違反', violationData.length, violationData.length?(vWins/violationData.length*100).toFixed(0)+'%':'-', vAvg.toFixed(2)],
+      ['🛑 見送り', skippedData.length, '-', '-'],
+    ])}
+
+    <div class="section-label">確信度別</div>
+    ${tableHtml(['確信度','件数','勝率','平均R'], groupStat(tradedData,'confidence',['A','B','C']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
     <div class="section-label">方向別</div>
-    ${tableHtml(['方向','件数','勝率','平均R'], dirStats.map(r=>[r.label,r.count,r.wr,r.avg]))}
+    ${tableHtml(['方向','件数','勝率','平均R'], groupStat(tradedData,'direction',['L','S']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
     <div class="section-label">時間帯別</div>
-    ${tableHtml(['時間帯','件数','勝率','平均R'], sessStats.map(r=>[r.label,r.count,r.wr,r.avg]))}
+    ${tableHtml(['時間帯','件数','勝率','平均R'], groupStat(tradedData,'session',['東京','ロンドン','NY','東京/ロンドン','ロンドン/NY']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
     <div class="section-label">4H環境別</div>
-    ${tableHtml(['環境','件数','勝率','平均R'], envStats.map(r=>[r.label,r.count,r.wr,r.avg]))}
+    ${tableHtml(['環境','件数','勝率','平均R'], groupStat(tradedData,'env_4h',['推進','フェイク連発','揺さぶり','不明']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
     <div class="section-label">管理分岐タイプ別</div>
-    ${tableHtml(['タイプ','件数','勝率','平均R'], mgmtStats.map(r=>[r.label.slice(0,6),r.count,r.wr,r.avg]))}
+    ${tableHtml(['タイプ','件数','勝率','平均R'], groupStat(tradedData,'mgmt_type',['通常（TP/SLのみ）','A：包み足撤退','B：逆行3本撤退','C：時間撤退','D：建値撤退','E：手動判断撤退']).map(r=>[r.label.slice(0,6),r.count,r.wr,r.avg]))}
 
     <div class="section-label">敗因ラベル別</div>
-    ${tableHtml(['敗因','件数','平均R'], lossStats.map(r=>[r.label,r.count,r.avg]))}
+    ${tableHtml(['敗因','件数','平均R'], groupStat(tradedData,'loss_label',['①レンジ刈り取り','②勢い不足','③高値更新失敗','④ルール無視','⑤タイミング早い','⑤タイミング遅い']).map(r=>[r.label,r.count,r.avg]))}
   `;
 }
 
@@ -863,8 +1468,8 @@ async function exportCSV() {
   const { data } = await sb.from('fx_trades').select('*').order('trade_date');
   if (!data || !data.length) { showToast('データなし', true); return; }
 
-  const headers = ['id','日付','曜日','時間帯','4H環境','1Hヒスト','直近高安','方向','確信度','根拠','管理分岐','0.5R到達','1R到達','最終R','最大含み益R','最大逆行R','敗因','メモ','記録日時'];
-  const keys = ['id','trade_date','weekday','session','env_4h','hist_1h','near_hl','direction','confidence','entry_reason','mgmt_type','reached_05r','reached_1r','final_r','max_profit_r','max_draw_r','loss_label','memo','created_at'];
+  const headers = ['id','種別','日付','曜日','時間帯','4H環境','1Hヒスト','直近高安','方向','確信度','根拠','管理分岐','0.5R到達','1R到達','最終R','最大含み益R','最大逆行R','敗因','メモ','記録日時'];
+  const keys    = ['id','entry_type','trade_date','weekday','session','env_4h','hist_1h','near_hl','direction','confidence','entry_reason','mgmt_type','reached_05r','reached_1r','final_r','max_profit_r','max_draw_r','loss_label','memo','created_at'];
 
   const bom = '\uFEFF';
   const csv = bom + [headers.join(','), ...data.map(row =>
@@ -900,33 +1505,24 @@ function saveConfig() {
 // ══════════════════════════════════════════════
 // CALCULATOR
 // ══════════════════════════════════════════════
-// USD/JPY: 1pip = 0.01円 × ロット数
-// 1R = 20pips固定（SL幅）
 const ONE_R_PIPS = 20;
 
 function calcConvert() {
   const lot  = parseFloat(document.getElementById('calc-lot').value)  || 0;
   const pips = parseFloat(document.getElementById('calc-pips').value) || 0;
-
   if (!lot || !pips) {
     document.getElementById('calc-result').style.display = 'none';
     renderCalcTable(lot || 10000);
     renderSlTable(lot || 10000);
     return;
   }
-
-  // 計算
-  const yenPerPip = lot * 0.01;          // USD/JPY: 1pip = lot × 0.01円
+  const yenPerPip = lot * 0.01;
   const totalYen  = yenPerPip * pips;
-  const rValue    = pips / ONE_R_PIPS;   // 1R = 20pips
-  const pipsFor1R = ONE_R_PIPS;
-
-  // 結果表示
+  const rValue    = pips / ONE_R_PIPS;
   document.getElementById('calc-result').style.display = 'block';
   document.getElementById('res-yen').textContent = '¥' + Math.round(totalYen).toLocaleString();
   document.getElementById('res-r').textContent   = rValue.toFixed(2) + 'R';
-  document.getElementById('res-1r-pips').textContent = pipsFor1R + 'pips';
-
+  document.getElementById('res-1r-pips').textContent = ONE_R_PIPS + 'pips';
   renderCalcTable(lot);
   renderSlTable(lot);
 }
@@ -939,8 +1535,8 @@ function renderCalcTable(lot) {
     { pips: 15, r: '0.75R', memo: 'SL引上げ目安' },
     { pips: 20, r: '1R',    memo: '★ SL幅 / 基準' },
     { pips: 25, r: '1.25R', memo: '' },
-    { pips: 30, r: '1.5R',  memo: 'テンプレB SL移動' },
-    { pips: 40, r: '2R',    memo: '★ TP2（最終利確）' },
+    { pips: 30, r: '1.5R',  memo: '' },
+    { pips: 40, r: '2R',    memo: '★ TP2' },
     { pips: 60, r: '3R',    memo: '大きく伸びた場合' },
   ];
   const tbody = document.getElementById('calc-tbody');
@@ -996,5 +1592,6 @@ function showToast(msg, isError=false) {
   toastTimer = setTimeout(() => el.className = 'toast', 2500);
 }
 </script>
+
 </body>
 </html>
