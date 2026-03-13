@@ -637,6 +637,15 @@
       <div class="chip" data-val="なし（勝ち）">なし</div>
     </div>
 
+    <div class="section-label">異常相場フラグ</div>
+    <div class="chip-group" id="cg-abnormal">
+      <div class="chip" data-val="normal" data-cls="sel-yes">✓ 通常相場</div>
+      <div class="chip" data-val="abnormal" data-cls="sel-no">⚠️ 異常相場</div>
+    </div>
+    <div id="abnormal-note" style="display:none;font-size:11px;color:var(--orange);margin-top:6px;padding:8px 12px;background:rgba(251,146,60,.08);border-radius:10px;border:1px solid rgba(251,146,60,.3);">
+      統計集計から除外されます（データは残ります）
+    </div>
+
     <div class="section-label">俺語メモ（自由記入）</div>
     <textarea id="inp-memo" rows="4" placeholder="気づいたこと、相場の状況など自由に…"></textarea>
 
@@ -708,7 +717,8 @@ ALTER TABLE fx_trades
   ADD COLUMN IF NOT EXISTS entry_type text DEFAULT 'normal',
   ADD COLUMN IF NOT EXISTS check_trend text,
   ADD COLUMN IF NOT EXISTS check_hist text,
-  ADD COLUMN IF NOT EXISTS check_hl text;
+  ADD COLUMN IF NOT EXISTS check_hl text,
+  ADD COLUMN IF NOT EXISTS is_abnormal boolean DEFAULT false;
     </textarea>
   </div>
 </div>
@@ -885,6 +895,7 @@ const state = {
   dir: null, conf: null, reason: null, mgmt: null,
   r05: null, r1: null, finalR: null,
   maxProfit: null, maxDraw: null, lossLabel: null,
+  abnormal: 'normal',
   skipSession: null, skipDir: null
 };
 
@@ -1011,6 +1022,7 @@ const chipMap = {
   'cg-maxprofit':    'maxProfit',
   'cg-maxdraw':      'maxDraw',
   'cg-loss':         'lossLabel',
+  'cg-abnormal':     'abnormal',
   'cg-skip-session': 'skipSession',
   'cg-skip-dir':     'skipDir',
 };
@@ -1025,6 +1037,11 @@ function setupChipGroups() {
         const cls = chip.dataset.cls || 'selected';
         chip.classList.add(cls === 'selected' ? 'selected' : cls);
         state[stateKey] = chip.dataset.val;
+        // 異常相場フラグの説明表示
+        if (groupId === 'cg-abnormal') {
+          document.getElementById('abnormal-note').style.display =
+            chip.dataset.val === 'abnormal' ? 'block' : 'none';
+        }
       });
     });
   });
@@ -1081,6 +1098,7 @@ async function submitTrade() {
     max_profit_r: state.maxProfit ? parseFloat(state.maxProfit) : null,
     max_draw_r:   state.maxDraw   ? parseFloat(state.maxDraw)   : null,
     loss_label:   state.lossLabel,
+    is_abnormal:  state.abnormal === 'abnormal',
     memo:         document.getElementById('inp-memo').value || null,
   };
 
@@ -1202,8 +1220,11 @@ function renderHistoryList() {
     else if (type === 'violation') typeTag = '<span class="rc-tag type-violation">⚡ 違反</span>';
     else typeTag = '<span class="rc-tag type-normal">✓ 正規</span>';
 
+    const abnormalTag = t.is_abnormal ? '<span class="rc-tag" style="border-color:var(--orange);color:var(--orange)">⚠️ 異常相場</span>' : '';
+
     const tags = [
       typeTag,
+      abnormalTag,
       t.direction ? `<span class="rc-tag dir-${t.direction}">${t.direction}</span>` : '',
       t.confidence ? `<span class="rc-tag conf-${t.confidence}">${t.confidence}</span>` : '',
       t.session  ? `<span class="rc-tag">${t.session}</span>`  : '',
@@ -1369,11 +1390,12 @@ async function loadStats() {
   const { data } = await sb.from('fx_trades').select('*');
   if (!data || !data.length) { el.innerHTML = '<div class="empty">データなし</div>'; return; }
 
-  // 正規＋違反のみを集計対象に
-  const tradedData = data.filter(t => (t.entry_type || 'normal') !== 'skipped');
+  // 正規＋違反のみを集計対象に（異常相場除外）
+  const tradedData = data.filter(t => (t.entry_type || 'normal') !== 'skipped' && !t.is_abnormal);
+  const abnormalData = data.filter(t => t.is_abnormal);
   const skippedData = data.filter(t => (t.entry_type || 'normal') === 'skipped');
-  const violationData = data.filter(t => t.entry_type === 'violation');
-  const normalData = data.filter(t => (t.entry_type || 'normal') === 'normal');
+  const violationData = data.filter(t => t.entry_type === 'violation' && !t.is_abnormal);
+  const normalData = data.filter(t => (t.entry_type || 'normal') === 'normal' && !t.is_abnormal);
 
   const total = tradedData.length;
   if (!total) { el.innerHTML = '<div class="empty">エントリーデータなし</div>'; return; }
@@ -1417,6 +1439,7 @@ async function loadStats() {
       ['✓ 正規', normalData.length, normalData.length?(nWins/normalData.length*100).toFixed(0)+'%':'-', nAvg.toFixed(2)],
       ['⚡ 違反', violationData.length, violationData.length?(vWins/violationData.length*100).toFixed(0)+'%':'-', vAvg.toFixed(2)],
       ['🛑 見送り', skippedData.length, '-', '-'],
+      ['⚠️ 異常相場', abnormalData.length, '-', '除外中'],
     ])}
 
     <div class="section-label">確信度別</div>
