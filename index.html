@@ -869,6 +869,12 @@ ALTER TABLE fx_trades
       <div class="chip" data-val="なし（勝ち）">なし</div>
     </div>
 
+    <div class="section-label">異常相場フラグ</div>
+    <div class="chip-group" id="edit-cg-abnormal">
+      <div class="chip" data-val="normal" data-cls="sel-yes">✓ 通常相場</div>
+      <div class="chip" data-val="abnormal" data-cls="sel-no">⚠️ 異常相場</div>
+    </div>
+
     <div class="section-label">メモ</div>
     <textarea id="edit-memo" rows="3"></textarea>
 
@@ -901,7 +907,7 @@ const state = {
 
 const editState = {
   session: null, dir: null, conf: null, mgmt: null,
-  finalR: null, lossLabel: null
+  finalR: null, lossLabel: null, abnormal: 'normal'
 };
 
 // ══════════════════════════════════════════════
@@ -1278,6 +1284,7 @@ function setupEditRButtons() {
     'edit-cg-conf':    'conf',
     'edit-cg-mgmt':    'mgmt',
     'edit-cg-loss':    'lossLabel',
+    'edit-cg-abnormal': 'abnormal',
   };
   Object.entries(editChipMap).forEach(([groupId, key]) => {
     const group = document.getElementById(groupId);
@@ -1308,6 +1315,7 @@ function openEditModal(id) {
     'edit-cg-conf':    trade.confidence,
     'edit-cg-mgmt':    trade.mgmt_type,
     'edit-cg-loss':    trade.loss_label,
+    'edit-cg-abnormal': trade.is_abnormal ? 'abnormal' : 'normal',
   };
   Object.entries(editChipMap).forEach(([groupId, val]) => {
     const group = document.getElementById(groupId);
@@ -1328,6 +1336,7 @@ function openEditModal(id) {
   editState.conf     = trade.confidence;
   editState.mgmt     = trade.mgmt_type;
   editState.lossLabel = trade.loss_label;
+  editState.abnormal = trade.is_abnormal ? 'abnormal' : 'normal';
   editState.finalR   = trade.final_r !== null ? parseFloat(trade.final_r) : null;
 
   // Rボタン復元
@@ -1368,6 +1377,7 @@ async function saveEdit() {
     mgmt_type:  editState.mgmt,
     final_r:    editState.finalR,
     loss_label: editState.lossLabel,
+    is_abnormal: editState.abnormal === 'abnormal',
     memo:       document.getElementById('edit-memo').value || null,
   };
 
