@@ -325,15 +325,18 @@
 
   .rc-actions {
     display: flex; gap: 6px;
-    position: absolute; top: 10px; right: 10px;
+    margin-top: 10px;
+    justify-content: flex-end;
   }
   .edit-btn, .delete-btn {
-    background: none; border: none; cursor: pointer;
-    font-size: 14px; padding: 4px;
-    transition: color .15s; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 99px; cursor: pointer;
+    font-size: 12px; padding: 4px 12px;
+    transition: all .15s; color: var(--muted);
+    font-family: inherit; font-weight: 700;
   }
-  .edit-btn:active { color: var(--accent); }
-  .delete-btn:active { color: var(--red); }
+  .edit-btn:active { color: var(--accent); border-color: var(--accent); }
+  .delete-btn:active { color: var(--red); border-color: var(--red); }
 
   /* ── EDIT MODAL ── */
   .modal-overlay {
@@ -1210,16 +1213,16 @@ function renderHistoryList() {
 
     return `
     <div class="record-card ${cardCls}" data-id="${t.id}">
-      <div class="rc-actions">
-        <button class="edit-btn" onclick="openEditModal(${t.id})">✏️</button>
-        <button class="delete-btn" onclick="deleteTrade(${t.id})">✕</button>
-      </div>
       <div class="rc-top">
         <div class="rc-date">${t.trade_date} ${t.weekday || ''}</div>
         <div class="rc-r ${rCls}">${rStr}</div>
       </div>
       <div class="rc-tags">${tags}</div>
       ${t.memo ? `<div class="rc-memo">💬 ${t.memo}</div>` : ''}
+      <div class="rc-actions">
+        <button class="edit-btn" onclick="openEditModal(${t.id})">✏️ 編集</button>
+        <button class="delete-btn" onclick="deleteTrade(${t.id})">✕ 削除</button>
+      </div>
     </div>`;
   }).join('');
 }
