@@ -691,6 +691,11 @@
 
 <!-- ③統計 -->
 <div class="page" id="page-stats">
+  <!-- 統計タブ -->
+  <div style="display:flex;gap:6px;margin-bottom:12px;">
+    <button class="chip selected" data-stats="normal" onclick="switchStatsTab('normal',this)" style="font-size:11px;padding:5px 12px;">📊 通常相場</button>
+    <button class="chip" data-stats="abnormal" onclick="switchStatsTab('abnormal',this)" style="font-size:11px;padding:5px 12px;">⚠️ 異常相場</button>
+  </div>
   <div id="stats-content"><div class="loading">読み込み中…</div></div>
   <button class="export-btn" onclick="exportCSV()">📥 CSVエクスポート</button>
 </div>
@@ -1392,28 +1397,36 @@ async function saveEdit() {
 // ══════════════════════════════════════════════
 // STATS
 // ══════════════════════════════════════════════
+let currentStatsTab = 'normal';
+let allStatsData = [];
+
+function switchStatsTab(tab, btn) {
+  currentStatsTab = tab;
+  document.querySelectorAll('[data-stats]').forEach(b => b.className = 'chip');
+  btn.classList.add('selected');
+  renderStats();
+}
+
 async function loadStats() {
   const el = document.getElementById('stats-content');
   if (!sb) { el.innerHTML = '<div class="empty">設定でSupabaseを接続してね</div>'; return; }
   el.innerHTML = '<div class="loading">計算中…</div>';
-
   const { data } = await sb.from('fx_trades').select('*');
   if (!data || !data.length) { el.innerHTML = '<div class="empty">データなし</div>'; return; }
+  allStatsData = data;
+  renderStats();
+}
 
-  // 正規＋違反のみを集計対象に（異常相場除外）
-  const tradedData = data.filter(t => (t.entry_type || 'normal') !== 'skipped' && !t.is_abnormal);
-  const abnormalData = data.filter(t => t.is_abnormal);
-  const skippedData = data.filter(t => (t.entry_type || 'normal') === 'skipped');
-  const violationData = data.filter(t => t.entry_type === 'violation' && !t.is_abnormal);
-  const normalData = data.filter(t => (t.entry_type || 'normal') === 'normal' && !t.is_abnormal);
+function renderStats() {
+  const el = document.getElementById('stats-content');
+  const data = allStatsData;
 
-  const total = tradedData.length;
-  if (!total) { el.innerHTML = '<div class="empty">エントリーデータなし</div>'; return; }
-
-  const wins  = tradedData.filter(t => parseFloat(t.final_r) > 0).length;
-  const totalR = tradedData.reduce((s, t) => s + (parseFloat(t.final_r) || 0), 0);
-  const avgR  = totalR / total;
-  const winRate = wins / total;
+  const tableHtml = (headers, rows) => `
+    <div class="table-wrap">
+    <table class="stats-table">
+      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c??'-'}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>`;
 
   const groupStat = (rows, key, values) => values.map(v => {
     const r = rows.filter(t => t[key] === v);
@@ -1423,53 +1436,115 @@ async function loadStats() {
     return { label: v, count: r.length, wr: (w/r.length*100).toFixed(0)+'%', avg: avg.toFixed(2) };
   }).filter(Boolean);
 
-  const tableHtml = (headers, rows) => `
-    <div class="table-wrap">
-    <table class="stats-table">
-      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
-      <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c??'-'}</td>`).join('')}</tr>`).join('')}</tbody>
-    </table></div>`;
+  if (currentStatsTab === 'normal') {
+    // 通常相場統計
+    const tradedData   = data.filter(t => (t.entry_type || 'normal') !== 'skipped' && !t.is_abnormal);
+    const abnormalData = data.filter(t => t.is_abnormal);
+    const skippedData  = data.filter(t => (t.entry_type || 'normal') === 'skipped' && !t.is_abnormal);
+    const violationData = data.filter(t => t.entry_type === 'violation' && !t.is_abnormal);
+    const normalData   = data.filter(t => (t.entry_type || 'normal') === 'normal' && !t.is_abnormal);
 
-  // 違反比較
-  const nWins = normalData.filter(t => parseFloat(t.final_r) > 0).length;
-  const nAvg  = normalData.length ? normalData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/normalData.length : 0;
-  const vWins = violationData.filter(t => parseFloat(t.final_r) > 0).length;
-  const vAvg  = violationData.length ? violationData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/violationData.length : 0;
+    const total = tradedData.length;
+    if (!total) { el.innerHTML = '<div class="empty">通常相場のデータなし</div>'; return; }
 
-  el.innerHTML = `
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">総トレード</div><div class="stat-val" style="color:var(--txt)">${total}</div></div>
-      <div class="stat-card"><div class="stat-label">合計R</div><div class="stat-val" style="color:${totalR>=0?'var(--green)':'var(--red)'}">${totalR>=0?'+':''}${totalR.toFixed(2)}</div></div>
-      <div class="stat-card"><div class="stat-label">勝率</div><div class="stat-val" style="color:var(--accent)">${(winRate*100).toFixed(0)}%</div></div>
-      <div class="stat-card"><div class="stat-label">平均R</div><div class="stat-val" style="color:${avgR>=0?'var(--green)':'var(--red)'}">${avgR>=0?'+':''}${avgR.toFixed(2)}</div></div>
-    </div>
+    const wins   = tradedData.filter(t => parseFloat(t.final_r) > 0).length;
+    const totalR = tradedData.reduce((s, t) => s + (parseFloat(t.final_r) || 0), 0);
+    const avgR   = totalR / total;
+    const winRate = wins / total;
 
-    <div class="section-label" style="margin-top:20px;">🔍 ルール遵守 vs 違反</div>
-    ${tableHtml(['種別','件数','勝率','平均R'],[
-      ['✓ 正規', normalData.length, normalData.length?(nWins/normalData.length*100).toFixed(0)+'%':'-', nAvg.toFixed(2)],
-      ['⚡ 違反', violationData.length, violationData.length?(vWins/violationData.length*100).toFixed(0)+'%':'-', vAvg.toFixed(2)],
-      ['🛑 見送り', skippedData.length, '-', '-'],
-      ['⚠️ 異常相場', abnormalData.length, '-', '除外中'],
-    ])}
+    const nWins = normalData.filter(t => parseFloat(t.final_r) > 0).length;
+    const nAvg  = normalData.length ? normalData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/normalData.length : 0;
+    const vWins = violationData.filter(t => parseFloat(t.final_r) > 0).length;
+    const vAvg  = violationData.length ? violationData.reduce((s,t)=>s+(parseFloat(t.final_r)||0),0)/violationData.length : 0;
 
-    <div class="section-label">確信度別</div>
-    ${tableHtml(['確信度','件数','勝率','平均R'], groupStat(tradedData,'confidence',['A','B','C']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+    el.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">総トレード</div><div class="stat-val" style="color:var(--txt)">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">合計R</div><div class="stat-val" style="color:${totalR>=0?'var(--green)':'var(--red)'}">${totalR>=0?'+':''}${totalR.toFixed(2)}</div></div>
+        <div class="stat-card"><div class="stat-label">勝率</div><div class="stat-val" style="color:var(--accent)">${(winRate*100).toFixed(0)}%</div></div>
+        <div class="stat-card"><div class="stat-label">平均R</div><div class="stat-val" style="color:${avgR>=0?'var(--green)':'var(--red)'}">${avgR>=0?'+':''}${avgR.toFixed(2)}</div></div>
+      </div>
 
-    <div class="section-label">方向別</div>
-    ${tableHtml(['方向','件数','勝率','平均R'], groupStat(tradedData,'direction',['L','S']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+      <div class="section-label" style="margin-top:20px;">🔍 ルール遵守 vs 違反</div>
+      ${tableHtml(['種別','件数','勝率','平均R'],[
+        ['✓ 正規', normalData.length, normalData.length?(nWins/normalData.length*100).toFixed(0)+'%':'-', nAvg.toFixed(2)],
+        ['⚡ 違反', violationData.length, violationData.length?(vWins/violationData.length*100).toFixed(0)+'%':'-', vAvg.toFixed(2)],
+        ['🛑 見送り', skippedData.length, '-', '-'],
+        ['⚠️ 異常相場', abnormalData.length, '-', '除外中'],
+      ])}
 
-    <div class="section-label">時間帯別</div>
-    ${tableHtml(['時間帯','件数','勝率','平均R'], groupStat(tradedData,'session',['東京','ロンドン','NY','東京/ロンドン','ロンドン/NY']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+      <div class="section-label">確信度別</div>
+      ${tableHtml(['確信度','件数','勝率','平均R'], groupStat(tradedData,'confidence',['A','B','C']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
-    <div class="section-label">4H環境別</div>
-    ${tableHtml(['環境','件数','勝率','平均R'], groupStat(tradedData,'env_4h',['推進','フェイク連発','揺さぶり','不明']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+      <div class="section-label">方向別</div>
+      ${tableHtml(['方向','件数','勝率','平均R'], groupStat(tradedData,'direction',['L','S']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
-    <div class="section-label">管理分岐タイプ別</div>
-    ${tableHtml(['タイプ','件数','勝率','平均R'], groupStat(tradedData,'mgmt_type',['通常（TP/SLのみ）','A：包み足撤退','B：逆行3本撤退','C：時間撤退','D：建値撤退','E：手動判断撤退']).map(r=>[r.label.slice(0,6),r.count,r.wr,r.avg]))}
+      <div class="section-label">時間帯別</div>
+      ${tableHtml(['時間帯','件数','勝率','平均R'], groupStat(tradedData,'session',['東京','ロンドン','NY','東京/ロンドン','ロンドン/NY']).map(r=>[r.label,r.count,r.wr,r.avg]))}
 
-    <div class="section-label">敗因ラベル別</div>
-    ${tableHtml(['敗因','件数','平均R'], groupStat(tradedData,'loss_label',['①レンジ刈り取り','②勢い不足','③高値更新失敗','④ルール無視','⑤タイミング早い','⑤タイミング遅い']).map(r=>[r.label,r.count,r.avg]))}
-  `;
+      <div class="section-label">4H環境別</div>
+      ${tableHtml(['環境','件数','勝率','平均R'], groupStat(tradedData,'env_4h',['推進','フェイク連発','揺さぶり','不明']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+
+      <div class="section-label">管理分岐タイプ別</div>
+      ${tableHtml(['タイプ','件数','勝率','平均R'], groupStat(tradedData,'mgmt_type',['通常（TP/SLのみ）','A：包み足撤退','B：逆行3本撤退','C：時間撤退','D：建値撤退','E：手動判断撤退']).map(r=>[r.label.slice(0,6),r.count,r.wr,r.avg]))}
+
+      <div class="section-label">敗因ラベル別</div>
+      ${tableHtml(['敗因','件数','平均R'], groupStat(tradedData,'loss_label',['①レンジ刈り取り','②勢い不足','③高値更新失敗','④ルール無視','⑤タイミング早い','⑤タイミング遅い']).map(r=>[r.label,r.count,r.avg]))}
+    `;
+
+  } else {
+    // 異常相場統計
+    const aData = data.filter(t => t.is_abnormal && (t.entry_type || 'normal') !== 'skipped');
+    if (!aData.length) {
+      el.innerHTML = '<div class="empty">異常相場のデータなし<br><span style="font-size:11px">履歴から編集で⚠️フラグを立ててね</span></div>';
+      return;
+    }
+
+    const aTotal  = aData.length;
+    const aWins   = aData.filter(t => parseFloat(t.final_r) > 0).length;
+    const aTotalR = aData.reduce((s,t) => s+(parseFloat(t.final_r)||0), 0);
+    const aAvgR   = aTotalR / aTotal;
+    const aWinRate = aWins / aTotal;
+
+    // 何回目で気づいたか（同じ日のトレード順番）
+    const byDate = {};
+    aData.forEach(t => {
+      const d = t.trade_date;
+      if (!byDate[d]) byDate[d] = [];
+      byDate[d].push(t);
+    });
+    const avgTriesBeforeNotice = Object.values(byDate).map(arr => arr.length);
+    const avgTries = avgTriesBeforeNotice.length
+      ? (avgTriesBeforeNotice.reduce((s,v)=>s+v,0)/avgTriesBeforeNotice.length).toFixed(1)
+      : '-';
+
+    el.innerHTML = `
+      <div style="background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.3);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--orange);">
+        ⚠️ 異常相場のみの統計です。学習・振り返り用データ。
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">総トレード</div><div class="stat-val" style="color:var(--orange)">${aTotal}</div></div>
+        <div class="stat-card"><div class="stat-label">合計R</div><div class="stat-val" style="color:${aTotalR>=0?'var(--green)':'var(--red)'}">${aTotalR>=0?'+':''}${aTotalR.toFixed(2)}</div></div>
+        <div class="stat-card"><div class="stat-label">勝率</div><div class="stat-val" style="color:var(--accent)">${(aWinRate*100).toFixed(0)}%</div></div>
+        <div class="stat-card"><div class="stat-label">平均R</div><div class="stat-val" style="color:${aAvgR>=0?'var(--green)':'var(--red)'}">${aAvgR>=0?'+':''}${aAvgR.toFixed(2)}</div></div>
+      </div>
+
+      <div class="stats-grid" style="margin-top:10px;">
+        <div class="stat-card"><div class="stat-label">異常相場の日数</div><div class="stat-val" style="color:var(--orange)">${Object.keys(byDate).length}日</div></div>
+        <div class="stat-card"><div class="stat-label">1日平均エントリー数</div><div class="stat-val" style="color:var(--orange)">${avgTries}回</div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:20px;">時間帯別</div>
+      ${tableHtml(['時間帯','件数','勝率','平均R'], groupStat(aData,'session',['東京','ロンドン','NY','東京/ロンドン','ロンドン/NY']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+
+      <div class="section-label">敗因ラベル別</div>
+      ${tableHtml(['敗因','件数','平均R'], groupStat(aData,'loss_label',['①レンジ刈り取り','②勢い不足','③高値更新失敗','④ルール無視','⑤タイミング早い','⑤タイミング遅い']).map(r=>[r.label,r.count,r.avg]))}
+
+      <div class="section-label">4H環境別</div>
+      ${tableHtml(['環境','件数','勝率','平均R'], groupStat(aData,'env_4h',['推進','フェイク連発','揺さぶり','不明']).map(r=>[r.label,r.count,r.wr,r.avg]))}
+    `;
+  }
 }
 
 // ══════════════════════════════════════════════
